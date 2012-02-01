@@ -1,0 +1,31 @@
+# Chinese translations for fcitx-m17n package
+# fcitx-m17n 软件包的简体中文翻译.
+# Copyright (C) 2012 THE fcitx-m17n'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the fcitx-m17n package.
+#  <xiaqqaix@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: fcitx-m 17n\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-01 18:17+0800\n"
+"PO-Revision-Date: 2012-02-01 18:34+0800\n"
+"Last-Translator:  <xiaqqaix@gmail.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fcitx-m17n.c:221
+#, c-format
+msgid "%s - %s (M17N)"
+msgstr "%s - %s (M17N)"
+
+#: fcitx-m17n.conf.in.h:1
+msgid "M17N"
+msgstr "M17N"
+
+#: fcitx-m17n.conf.in.h:2
+msgid "M17N IM Support For Fcitx"
+msgstr "M17N 输入法支持"
