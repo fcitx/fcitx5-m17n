@@ -34,7 +34,7 @@ Dependency::
   |         +------------+------------+
   |         |        libm17n          |
   +---------+------------+------------+
-  |  build  | pkg-config |            |
+  |  build  | pkg-config |   clang    |
   |  extra  |  intltool  |            |
   |         |   gettext  |            |
   +---------+------------+------------+

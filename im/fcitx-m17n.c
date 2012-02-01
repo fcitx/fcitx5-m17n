@@ -6,13 +6,15 @@
 #include <locale.h>
 #include <m17n.h>
 #include <fcitx-utils/log.h>
+#include <fcitx-utils/utf8.h>
 #include <fcitx/keys.h>
 #include <fcitx/instance.h>
 #include <fcitx/context.h>
 
 #include "fcitx-m17n.h"
 
-#define _(x) gettext(x)
+#define TEXTDOMAIN "fcitx-m17n"
+#define _(x) dgettext(TEXTDOMAIN, x)
 
 FCITX_EXPORT_API
 FcitxIMClass ime = {
@@ -25,7 +27,7 @@ int ABI_VERSION = 5;
 
 char* mtextToUTF8(MText* mt) {
     // TODO Verify that bufsize is "just enough" in worst scenerio.
-    size_t bufsize = mtext_len(mt) * 6 + 6;
+    size_t bufsize = (mtext_len(mt)+1) * UTF8_MAX_LENGTH;
     char* buf = (char*) malloc(bufsize);
 
     MConverter* mconv = mconv_buffer_converter(Mcoding_utf_8, (unsigned char*) buf, bufsize);
@@ -38,7 +40,7 @@ char* mtextToUTF8(MText* mt) {
 
 inline static void setPreedit(FcitxInputState* is, const char* s) {
     FcitxMessages* m = FcitxInputStateGetClientPreedit(is);
-    FcitxMessagesSetMessageCount(m, 1);
+    FcitxMessagesSetMessageCount(m, 0);
     FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
 }
 
@@ -194,8 +196,7 @@ static m17nIM m17nIMs[] = {
 };
 
 void *FcitxM17NCreate(FcitxInstance* inst) {
-    bindtextdomain("fcitx-m17n", LOCALEDIR);
-    setlocale(LC_ALL, "");
+    bindtextdomain(TEXTDOMAIN, LOCALEDIR);
     M17N_INIT();
 
     Addon* addon = (Addon*) fcitx_utils_malloc0(sizeof(Addon));
@@ -226,8 +227,10 @@ void *FcitxM17NCreate(FcitxInstance* inst) {
     		FcitxM17NInit, FcitxM17NReset, FcitxM17NDoInput, 
     		FcitxM17NGetCandWords, NULL, FcitxM17NSave,
     		FcitxM17NReload, NULL,
-    		5, "en_US"
+    		100, strcmp(p->lang, "t") == 0 ? NULL : p->lang
     	);
+        free(uniqueName);
+        free(name);
     }
 
     return addon;
