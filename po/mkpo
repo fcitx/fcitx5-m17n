@@ -1,8 +1,0 @@
-#!/bin/sh
-if [ -f "$1" ]; then
-	msgmerge -U "$1" "$2"
-	touch "$1"
-else
-	msginit -o"$1" "$2" "$3"
-fi
-

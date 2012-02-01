@@ -8,13 +8,14 @@
     fprintf(stderr, "Bad things happened at %s:%d.\n", __FILE__, __LINE__)
 
 enum { NLINE = 1024 };
-char *mygetline(const char *prompt) {
+char *mygetline(const char *prompt)
+{
     static char line[NLINE];
     printf("%s", prompt);
     if (fgets(line, NLINE, stdin)) {
         int n = strlen(line);
-        if (line[n-1] == '\n') {
-            line[n-1] = '\0';
+        if (line[n - 1] == '\n') {
+            line[n - 1] = '\0';
         }
         return line;
     } else {
@@ -22,9 +23,10 @@ char *mygetline(const char *prompt) {
     }
 }
 
-int mtext_print(FILE *of, MText *text) {
+int mtext_print(FILE *of, MText *text)
+{
     size_t bufsize = (mtext_len(text) + 1) * 6;
-    auto *buf = new unsigned char[bufsize];
+    unsigned char *buf = new unsigned char[bufsize];
 
     m17n::Converter conv = mconv_buffer_converter(Mnil, buf, bufsize);
     mconv_encode(conv, text);
@@ -35,11 +37,13 @@ int mtext_print(FILE *of, MText *text) {
     return re;
 }
 
-int msymbol_print(FILE *of, MSymbol sym) {
+int msymbol_print(FILE *of, MSymbol sym)
+{
     return fprintf(of, "%s", msymbol_name(sym));
 }
 
-int mplist_print_text_values(FILE *of, MPlist *plist, const char *sep) {
+int mplist_print_text_values(FILE *of, MPlist *plist, const char *sep)
+{
     int re = 0;
     re += fprintf(of, "[%d]", plist ? mplist_length(plist) : 0);
     bool first = true;
@@ -53,7 +57,8 @@ int mplist_print_text_values(FILE *of, MPlist *plist, const char *sep) {
     return re;
 }
 
-int process_sym_stepped(MInputContext *ic, MSymbol sym) {
+int process_sym_stepped(MInputContext *ic, MSymbol sym)
+{
     int re;
     if (minput_filter(ic, sym, NULL)) {
         printf("-%s:", msymbol_name(sym));
@@ -86,7 +91,8 @@ int process_sym_stepped(MInputContext *ic, MSymbol sym) {
     return re;
 }
 
-int process_sym_unstepped(MInputContext *ic, MSymbol sym) {
+int process_sym_unstepped(MInputContext *ic, MSymbol sym)
+{
     int re;
     if (minput_filter(ic, sym, NULL)) {
         re = 0;
@@ -111,8 +117,8 @@ struct proc {
     const char* header;
     const char* footer;
 } procs[] = {
-    process_sym_stepped, "sym:converted:preedit\n", "",
-    process_sym_unstepped, "-> ", "\n",
+    {process_sym_stepped, "sym:converted:preedit\n", ""},
+    {process_sym_unstepped, "-> ", "\n"},
 };
 
 #ifdef STEP
@@ -121,7 +127,8 @@ const proc* the_proc = &procs[0];
 const proc* the_proc = &procs[1];
 #endif
 
-int main() {
+int main()
+{
     setlocale(LC_ALL, "");
 
     M17N_INIT();
@@ -141,7 +148,7 @@ int main() {
             complain();
             continue;
         }
-        m17n::InputMethod mim = minput_open_im(mlang, mname, nullptr);
+        m17n::InputMethod mim = minput_open_im(mlang, mname, 0);
         if (!mim) {
             fprintf(stderr, "Seems there is no such MIM.\n");
             continue;
