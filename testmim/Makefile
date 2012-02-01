@@ -9,10 +9,9 @@ include ../common.mk
 include ../config.mk
 include config.mk
 
-getline.o: getline.h
-testmim.o: m17n.hh getline.h
+testmim.o: m17n.hh
 
-testmim: testmim.o getline.o
+testmim: testmim.o
 	$(CXX) $(LDFLAGS) -o $@ $^ $(M17NLIBS)
 
 all: testmim

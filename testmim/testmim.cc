@@ -3,10 +3,24 @@
 #include <string.h>
 #include <locale.h>
 #include "m17n.hh"
-#include "getline.h"
 
 #define complain()\
 	fprintf(stderr, "Bad things happened at %s:%d.\n", __FILE__, __LINE__)
+
+enum { NLINE = 1024 };
+char *mygetline(const char *prompt) {
+	static char line[NLINE];
+	printf("%s", prompt);
+	if (fgets(line, NLINE, stdin)) {
+		int n = strlen(line);
+		if (line[n-1] == '\n') {
+			line[n-1] = '\0';
+		}
+		return line;
+	} else {
+		return NULL;
+	}
+}
 
 int mtext_print(FILE *of, MText *text) {
 	size_t bufsize = (mtext_len(text) + 1) * 6;

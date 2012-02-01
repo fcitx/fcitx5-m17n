@@ -29,8 +29,8 @@ Dependency::
   +---------+------------+------------+
   | subdir  |   im & po  | testmim    |
   +---------+------------+------------+
-  | runtime |   fcitx    | readline   |
-  |         |            | (optional) |
+  | runtime |   fcitx    |            |
+  |         |            |            |
   |         +------------+------------+
   |         |        libm17n          |
   +---------+------------+------------+
@@ -42,11 +42,7 @@ Dependency::
 License
 =======
 All codes are currently licensed in the 2-clause BSD license (simplified BSD
-license). `testmim` may be optionally linked against readline, and in that
-case, the binary is licensed in GPLv2; a copy of GPLv2 is included in
-`GPLv2`. The code is always licensed in the 2-clause BSD license.
-
-See `COPYING` for a copy of the 2-clause BSD license. A list of of fcitx-m17n
+license).  See `COPYING` for a copy of the license. A list of of fcitx-m17n
 authors and contributors is included herein:
 
 * Cheer Xiao
