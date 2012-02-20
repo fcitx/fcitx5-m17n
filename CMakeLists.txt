@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 
-project(fcitx-chewing)
+project(fcitx-m17n)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
