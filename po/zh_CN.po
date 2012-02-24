@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fcitx-m 17n\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-01 23:32+0800\n"
+"POT-Creation-Date: 2012-02-24 20:09+0800\n"
 "PO-Revision-Date: 2012-02-01 18:34+0800\n"
 "Last-Translator:  <xiaqqaix@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -17,13 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/fcitx-m17n.c:222
+#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/fcitx-m17n.c:302
 #, c-format
 msgid "%s - %s (M17N)"
 msgstr "%s - %s (M17N)"
 
-#~ msgid "M17N"
-#~ msgstr "M17N"
+#: /home/saber/Develop/fcitx-m17n/build/po/tmp/fcitx-m17n.conf.in.h:1
+msgid "M17N"
+msgstr "M17N"
 
-#~ msgid "M17N IM Support For Fcitx"
-#~ msgstr "M17N 输入法支持"
+#: /home/saber/Develop/fcitx-m17n/build/po/tmp/fcitx-m17n.conf.in.h:2
+msgid "M17N IM Support For Fcitx"
+msgstr "M17N 输入法支持"

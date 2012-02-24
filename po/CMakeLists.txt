@@ -14,6 +14,7 @@ add_custom_target(
     pot
     COMMAND INTLTOOL_EXTRACT=${INTLTOOL_EXTRACT} srcdir=${CMAKE_CURRENT_BINARY_DIR} ${INTLTOOL_UPDATE} --gettext-package fcitx-m17n --pot
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/conf.po
     )
 
 # Update .po files and compile them to binary .gmo files
