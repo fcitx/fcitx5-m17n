@@ -108,6 +108,32 @@ int process_sym_unstepped(MInputContext *ic, MSymbol sym)
     return re;
 }
 
+void list_mim() {
+    // minput_list() returns a MPlist of MPlist's...
+    MPlist *imlist = minput_list(Mnil);
+    int n = mplist_length(imlist);
+    printf("%d\n", n);
+    for (; n--; imlist = mplist_next(imlist)) {
+        MPlist *info = (MPlist*) mplist_value(imlist);
+
+        MSymbol lang = (MSymbol) mplist_value(info);
+        info = mplist_next(info);
+
+        MSymbol name = (MSymbol) mplist_value(info);
+        info = mplist_next(info);
+
+        if (((MSymbol) mplist_value(info)) != Mt) {
+            // Not sane
+            continue;
+        }
+
+        msymbol_print(stdout, lang);
+        printf(" ");
+        msymbol_print(stdout, name);
+        printf("\n");
+    }
+}
+
 const char ps1[] = "\033[31m>\033[m ";
 const char ps2[] = "\033[35m>>\033[m ";
 
@@ -132,6 +158,7 @@ int main()
     setlocale(LC_ALL, "");
 
     M17N_INIT();
+    list_mim();
 
     char *line;
     while ((line = mygetline(ps1))) {

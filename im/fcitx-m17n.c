@@ -233,12 +233,8 @@ void FcitxM17NSave(void *arg)
     // FcitxLog(INFO, "Save called, hahaha");
 }
 
-IM* makeIM(Addon* owner, const char* lang, const char* name)
+IM* makeIM(Addon* owner, MSymbol mlang, MSymbol mname)
 {
-    MSymbol mlang = msymbol(lang);
-    if (!mlang) return NULL;
-    MSymbol mname = msymbol(name);
-    if (!mname) return NULL;
     MInputMethod *mim = minput_open_im(mlang, mname, NULL);
     if (!mim) return NULL;
     MInputContext *mic = minput_create_ic(mim, NULL);
@@ -261,19 +257,6 @@ void delIM(IM* im)
     free(im);
 }
 
-typedef struct {
-    const char* lang;
-    const char* name;
-} m17nIM;
-
-static m17nIM m17nIMs[] = {
-    {"t", "latn-post"},
-    {"el", "kbd"},
-    {"eo", "plena"},
-    {"ja", "anthy"},
-    {NULL, NULL}
-};
-
 void *FcitxM17NCreate(FcitxInstance* inst)
 {
     bindtextdomain(TEXTDOMAIN, LOCALEDIR);
@@ -282,35 +265,50 @@ void *FcitxM17NCreate(FcitxInstance* inst)
     Addon* addon = (Addon*) fcitx_utils_malloc0(sizeof(Addon));
     addon->owner = inst;
 
-    // TODO Built-in list of IMs only.
-    addon->nim = 0;
-    m17nIM* p;
-    for (p = m17nIMs; p->lang; p++) {
-        addon->nim++;
-    }
-
+    MPlist *mimlist = minput_list(Mnil);
+    addon->nim = mplist_length(mimlist);
+    /* This wastes some space if some of the m17n IM's are not "sane",
+     * but it also makes the the code a little simpler.
+     */
     addon->ims = (IM**) fcitx_utils_malloc0(sizeof(IM*) * addon->nim);
 
-    int i = 0;
-    for (p = m17nIMs; p->lang; p++, i++) {
-        if (!(addon->ims[i] = makeIM(addon, p->lang, p->name))) {
-            FcitxLog(ERROR, "Failed to create IM [%s: %s]", p->lang, p->name);
+    int i;
+    for (i = 0; i < addon->nim; i++, mimlist = mplist_next(mimlist)) {
+        MPlist *info = (MPlist*) mplist_value(mimlist);
+
+        MSymbol mlang = (MSymbol) mplist_value(info);
+        info = mplist_next(info);
+
+        MSymbol mname = (MSymbol) mplist_value(info);
+        info = mplist_next(info);
+
+        char *lang = msymbol_name(mlang);
+        char *name = msymbol_name(mname);
+
+        if (((MSymbol) mplist_value(info)) != Mt) {
+            // Not "sane"
+            FcitxLog(WARNING, "Insane IM [%s: %s]", lang, name);
             continue;
         }
-        char *uniqueName, *name, *iconName;
-        asprintf(&uniqueName, "m17n_%s_%s", p->lang, p->name);
-        asprintf(&name, _("%s - %s (M17N)"), p->lang, p->name);
+        if (!(addon->ims[i] = makeIM(addon, mlang, mname))) {
+            FcitxLog(ERROR, "Failed to create IM [%s: %s]", lang, name);
+            continue;
+        }
+        FcitxLog(INFO, "Created IM [%s: %s]", lang, name);
+        char *uniqueName, *fxName, *iconName;
+        asprintf(&uniqueName, "m17n_%s_%s", lang, name);
+        asprintf(&fxName, _("%s - %s (M17N)"), lang, name);
         iconName = uniqueName;
         FcitxInstanceRegisterIM(
             inst, addon->ims[i],
-            uniqueName, name, iconName,
+            uniqueName, fxName, iconName,
             FcitxM17NInit, FcitxM17NReset, FcitxM17NDoInput,
             FcitxM17NGetCandWords, NULL, FcitxM17NSave,
             FcitxM17NReload, NULL,
-            100, strcmp(p->lang, "t") == 0 ? NULL : p->lang
+            100, strcmp(lang, "t") == 0 ? NULL : lang
         );
         free(uniqueName);
-        free(name);
+        free(fxName);
     }
 
     return addon;
