@@ -103,7 +103,6 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
         return Mnil;
     }
 
-    char temp[2] = {'\0', '\0'};
     const char* base = "";
 
     if (sym >= FcitxKey_space && sym <= FcitxKey_asciitilde) {
@@ -118,12 +117,13 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
             mask |= FcitxKeyState_Ctrl;
         }
 
-       temp[0] = c & 0xff;
-       base = temp;
+        char temp[2] = " ";
+        temp[0] = c & 0xff;
+        base = temp;
     }
     else {
         mask |= state & (FcitxKeyState_Ctrl_Shift);
-        base =  KeySymName (sym);
+        base = KeySymName(sym);
         if (base == NULL || strlen(base) == 0) {
             return Mnil;
         }
@@ -158,7 +158,7 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
     char* keystr;
     asprintf(&keystr, "%s%s", prefix, center);
 
-    mkeysym = msymbol (keystr);
+    mkeysym = msymbol(keystr);
     free(keystr);
 
     return mkeysym;
