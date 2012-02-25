@@ -78,15 +78,33 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
 MSymbol
 FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
 {
+    /*
+     Rationale:
+
+     This function converts fcitx key symbols to m17n key symbols.
+
+     Both fcitx and m17n uses X symbols to represent basic key events
+     (without modifiers). The conversion of modifier syntax is implemented in
+     this function.
+
+     The formalism provided by fcitx intended for more portable code, like
+     enums such as FCITX_BACKSPACE to represent Backspace key event, macros
+     such as FcitxHotkeyIsHotkey to do comaparision, is largely disregarded
+     here. Similiar situation for libm17n's notion of special keys like
+     msymbol("BackSpace") for Backspace key event.
+
+     MSymbol's don't need to be finalized in any way.
+     */
+
     MSymbol mkeysym = Mnil;
     unsigned int mask = 0;
 
     if (sym >= FcitxKey_Shift_L && sym <= FcitxKey_Hyper_R) {
         return Mnil;
     }
-    
+
     char temp[2] = {'\0', '\0'};
-    const char* center = "";
+    const char* base = "";
 
     if (sym >= FcitxKey_space && sym <= FcitxKey_asciitilde) {
         FcitxKeySym c = sym;
@@ -99,14 +117,14 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
                 c += FcitxKey_A - FcitxKey_a;
             mask |= FcitxKeyState_Ctrl;
         }
-       
+
        temp[0] = c & 0xff;
-       center = temp;
+       base = temp;
     }
     else {
         mask |= state & (FcitxKeyState_Ctrl_Shift);
-        center =  KeySymName (sym);
-        if (center == NULL || strlen(center) == 0) {
+        base =  KeySymName (sym);
+        if (base == NULL || strlen(base) == 0) {
             return Mnil;
         }
     }
@@ -136,7 +154,7 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
     if (mask & FcitxKeyState_Shift) {
         prefix = "S-";
     }
-    
+
     char* keystr;
     asprintf(&keystr, "%s%s", prefix, center);
 
@@ -149,25 +167,8 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
 INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
 {
     // FcitxLog(INFO, "DoInput got sym=%x, state=%x, hahaha", sym, state);
-    /*
-     Rationale:
-
-     This code first tries to map special keys from fcitx convention to
-     libm17n convention.
-
-     fcitx uses X symbols convention, but it also provides a huge bunch of
-     enums like FCITX_BACKSPACE plus a macro FcitxHotkeyIsHotKey, which is
-     supposed to be cleaner than using the X primitives directly.
-
-     libm17n's notion of special keys is not yet clear to me. For one thing,
-     MSymbol is used as the universal struct for all "atoms" in libm17n, and
-     it is known that msymbol("BackSpace") is the MSymbol for obviously,
-     backspace.
-
-     MSymbol's don't need to be finalized in any way.
-     */
     MSymbol msym = FcitxM17NKeySymToSymbol(sym, state);
-    
+
     if (msym == Mnil) {
         FcitxLog(INFO, "sym=%x, state=%x, not my dish", sym, state);
         return IRV_TO_PROCESS;
@@ -178,7 +179,7 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
     FcitxInputState* is = FcitxInstanceGetInputState(inst);
     FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
 
-    // Input symbol was passed "through" by m17n
+    // Whether input symbol was passed "through" by m17n
     int thru = 0;
     if (!minput_filter(im->mic, msym, NULL)) {
         MText* produced = mtext();
@@ -305,7 +306,7 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             FcitxM17NInit, FcitxM17NReset, FcitxM17NDoInput,
             FcitxM17NGetCandWords, NULL, FcitxM17NSave,
             FcitxM17NReload, NULL,
-            100, strcmp(lang, "t") == 0 ? NULL : lang
+            100, strcmp(lang, "t") == 0 ? "*" : lang
         );
         free(uniqueName);
         free(fxName);
