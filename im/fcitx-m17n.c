@@ -62,6 +62,14 @@ char* mtextToUTF8(MText* mt)
     return buf;
 }
 
+// Don't use this for large indices or (worse) list iteration.
+void *mplistSub(MPlist *head, size_t idx) {
+    while (idx--) {
+        head = mplist_next(head);
+    }
+    return mplist_value(head);
+}
+
 inline static void setPreedit(FcitxInputState* is, const char* s)
 {
     FcitxMessages* m = FcitxInputStateGetClientPreedit(is);
@@ -139,6 +147,7 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
     if (mask & FcitxKeyState_Super2) {
         prefix = "s-";
     }
+    // This is mysterious. - xiaq
     if (mask & FcitxKeyState_ScrollLock) {
         prefix = "G-";
     }
@@ -156,7 +165,7 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
     }
 
     char* keystr;
-    asprintf(&keystr, "%s%s", prefix, center);
+    asprintf(&keystr, "%s%s", prefix, base);
 
     mkeysym = msymbol(keystr);
     free(keystr);
@@ -200,6 +209,7 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
     free(preedit);
 
     char* mstatus = mtextToUTF8(im->mic->status);
+    // TODO Fcitx should be able to show the status in some way.
     FcitxLog(INFO, "mic status is %s", mstatus);
     free(mstatus);
 
@@ -268,25 +278,23 @@ void *FcitxM17NCreate(FcitxInstance* inst)
 
     MPlist *mimlist = minput_list(Mnil);
     addon->nim = mplist_length(mimlist);
-    /* This wastes some space if some of the m17n IM's are not "sane",
-     * but it also makes the the code a little simpler.
-     */
+    // This wastes some space if some of the m17n IM's are not "sane",
+    // but it also makes the the code a little simpler.
     addon->ims = (IM**) fcitx_utils_malloc0(sizeof(IM*) * addon->nim);
 
     int i;
     for (i = 0; i < addon->nim; i++, mimlist = mplist_next(mimlist)) {
-        MPlist *info = (MPlist*) mplist_value(mimlist);
-
-        MSymbol mlang = (MSymbol) mplist_value(info);
-        info = mplist_next(info);
-
-        MSymbol mname = (MSymbol) mplist_value(info);
-        info = mplist_next(info);
+        // See m17n documentation of minput_list() in input.c.
+        MPlist *info;
+        info = (MPlist*) mplist_value(mimlist);
+        MSymbol mlang = (MSymbol) mplistSub(info, 0);
+        MSymbol mname = (MSymbol) mplistSub(info, 1);
+        MSymbol msane = (MSymbol) mplistSub(info, 2);
 
         char *lang = msymbol_name(mlang);
         char *name = msymbol_name(mname);
 
-        if (((MSymbol) mplist_value(info)) != Mt) {
+        if (msane != Mt) {
             // Not "sane"
             FcitxLog(WARNING, "Insane IM [%s: %s]", lang, name);
             continue;
@@ -296,10 +304,29 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             continue;
         }
         FcitxLog(INFO, "Created IM [%s: %s]", lang, name);
+
         char *uniqueName, *fxName, *iconName;
         asprintf(&uniqueName, "m17n_%s_%s", lang, name);
         asprintf(&fxName, _("%s - %s (M17N)"), lang, name);
-        iconName = uniqueName;
+
+        info = minput_get_title_icon(mlang, mname);
+        // head of info is a MText
+        m17n_object_unref(mplistSub(info, 0));
+        MText *iconPath = (MText*) mplistSub(info, 1);
+
+        if (iconPath) {
+            // This disregards the fact that the path to m17n icon files
+            // might have utf8-incompatible path strings. However, since the
+            // path almost always consists of ascii characters (typically
+            // /usr/share/m17n/icons/... on Linux systems, this is a
+            // reasonable assumption.
+            iconName = mtextToUTF8(iconPath);
+            m17n_object_unref(iconPath);
+            FcitxLog(INFO, "Mim icon is %s", iconName);
+        } else {
+            iconName = uniqueName;
+        }
+
         FcitxInstanceRegisterIM(
             inst, addon->ims[i],
             uniqueName, fxName, iconName,
@@ -308,6 +335,9 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             FcitxM17NReload, NULL,
             100, strcmp(lang, "t") == 0 ? "*" : lang
         );
+        if (iconName != uniqueName) {
+            free(iconName);
+        }
         free(uniqueName);
         free(fxName);
     }
