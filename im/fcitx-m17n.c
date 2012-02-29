@@ -82,54 +82,10 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
     return IRV_DO_NOTHING;
 }
 
+// Never called
 INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
 {
-    // FcitxLog(INFO, "CandWords");
-    IM* im = (IM*) arg;
-    FcitxInstance* inst = im->owner->owner;
-    FcitxInputState* is = FcitxInstanceGetInputState(inst);
-    // FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
-    FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
-    // FcitxCandidateWordReset(cl);
-    if (im->mic->candidate_show) {
-        FcitxLog(INFO, "Building candidate list");
-        FcitxCandidateWord cand;
-        cand.owner = im;
-        cand.callback = FcitxM17NGetCandWord;
-        cand.priv = NULL;
-        cand.strExtra = NULL;
-        cand.wordType = MSG_OTHER;
-
-        MPlist *head = im->mic->candidate_list;
-        for (; head; head = mplist_next(head)) {
-            MSymbol key = mplist_key(head);
-            if (key == Mplist) {
-                MPlist *head2 = mplist_value(head);
-                for (; head2; head2 = mplist_next(head2)) {
-                    MText *word = mplist_value(head2);
-                    // Fcitx will do the free() for us.
-                    cand.strWord = mtextToUTF8(word);
-                    m17n_object_unref(word);
-                    FcitxCandidateWordAppend(cl, &cand);
-                }
-            } else if (key == Mtext) {
-                char *words = mtextToUTF8((MText*) mplist_value(head));
-                char *p, *q;
-                for (p = words; *p; p = q) {
-                    int unused;
-                    q = fcitx_utf8_get_char(p, &unused);
-                    cand.strWord = strndup(p, q-p);
-                    FcitxCandidateWordAppend(cl, &cand);
-                }
-                free(words);
-            } else {
-                FcitxLog(INFO, "%s", msymbol_name(key));
-            }
-        }
-    }
-    // return IRV_DO_NOTHING;
-    return IRV_DISPLAY_CANDWORDS;
-    // return IRV_FLAG_UPDATE_INPUT_WINDOW;
+    return IRV_TO_PROCESS;
 }
 
 MSymbol FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
@@ -282,14 +238,47 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
         free(mstatus);
     }
 
-    if (thru) {
-        return IRV_TO_PROCESS;
-    } else if (im->mic->candidates_changed) {
-        return IRV_FLAG_UPDATE_CANDIDATE_WORDS;
-        // return IRV_DISPLAY_CANDWORDS;
-    } else {
-        return IRV_DO_NOTHING;
+    if (im->mic->candidates_changed) {
+        FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
+        FcitxCandidateWordReset(cl);
+        FcitxLog(INFO, "Building candidate list");
+        FcitxCandidateWord cand;
+        cand.owner = im;
+        cand.callback = FcitxM17NGetCandWord;
+        cand.priv = NULL;
+        cand.strExtra = NULL;
+        cand.wordType = MSG_OTHER;
+
+        MPlist *head = im->mic->candidate_list;
+        for (; head; head = mplist_next(head)) {
+            MSymbol key = mplist_key(head);
+            if (key == Mplist) {
+                MPlist *head2 = mplist_value(head);
+                for (; head2; head2 = mplist_next(head2)) {
+                    MText *word = mplist_value(head2);
+                    // Fcitx will do the free() for us.
+                    cand.strWord = mtextToUTF8(word);
+                    m17n_object_unref(word);
+                    FcitxCandidateWordAppend(cl, &cand);
+                }
+            } else if (key == Mtext) {
+                char *words = mtextToUTF8((MText*) mplist_value(head));
+                char *p, *q;
+                for (p = words; *p; p = q) {
+                    int unused;
+                    q = fcitx_utf8_get_char(p, &unused);
+                    cand.strWord = strndup(p, q-p);
+                    FcitxCandidateWordAppend(cl, &cand);
+                }
+                free(words);
+            } else {
+                FcitxLog(INFO, "%s", msymbol_name(key));
+            }
+        }
+        FcitxUIUpdateInputWindow(inst);
     }
+
+    return thru ? IRV_FLAG_FORWARD_KEY : IRV_DO_NOTHING;
 }
 
 void FcitxM17NReset(void *arg)
