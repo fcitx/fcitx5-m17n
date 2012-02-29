@@ -5,8 +5,9 @@ Fcitx-m17n
 This is the source tree of fcitx-m17n, some trivial little codes the wrap the
 m17n input method engine into a fcitx input method.
 
-Tree
-====
+Source Tree
+===========
+
 * im:
   Most codes.
 * po:
@@ -16,32 +17,32 @@ Tree
 
 Dependency, Building and Installation
 =====================================
-Fcitx-m17n is maintained using CMake
 
-To install, run::
+Fcitx-m17n is maintained using CMake. To install, run::
 
-  mkdir build; cd build; cmake -DCMAKE_INSTALL_PREFIX=/usr; make; make install
+  mkdir build; cd build
+  cmake .. [ FLAGS ] 
+  make && make install
 
-Dependency::
+To install to /usr, include `-DCMAKE_INSTALL_PREFIX=/usr` in `FLAGS`. To
+build with debug symbols, include `-DCMAKE_BUILD_TYPE`. You may as well
+replace `cmake` with `ccmake`, which gives you a nice curses UI to adjust
+CMake flags.
 
-  +---------+------------+------------+
-  | subdir  |   im & po  | testmim    |
-  +---------+------------+------------+
-  | runtime |   fcitx    |            |
-  |         |            |            |
-  |         +------------+------------+
-  |         |        libm17n          |
-  +---------+------------+------------+
-  |  build  | pkg-config |   clang    |
-  |  extra  |  intltool  |            |
-  |         |   gettext  |            |
-  +---------+------------+------------+
+Dependencies is handled by CMake and therefore not listed here. But note that
+testmim uses some C++11 features and requires a recent C++ compiler. Latest
+clang will suffice.
+
+You may want to read `CMakeLists.txt` in the subdirectories.
 
 License
 =======
-All codes are currently licensed in the LGPL 2.1.
-See `COPYING` for a copy of the license. A list of of fcitx-m17n
-authors and contributors is included herein:
+
+All codes are currently licensed in LGPL 2.1.
+
+See `COPYING` for a copy of the license. A list of of fcitx-m17n authors and
+contributors is included herein:
 
 * Cheer Xiao
 * CSSlayer
+
