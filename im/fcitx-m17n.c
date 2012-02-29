@@ -197,7 +197,7 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
     MSymbol msym = FcitxM17NKeySymToSymbol(sym, state);
 
     if (msym == Mnil) {
-        FcitxLog(INFO, "sym=%x, state=%x, not my dish", sym, state);
+        FcitxLog(DEBUG, "sym=%x, state=%x, not my dish", sym, state);
         return IRV_TO_PROCESS;
     }
 
@@ -240,8 +240,11 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
 
     if (im->mic->candidates_changed) {
         FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
+        // TODO This is not the correct way to do things, though it is
+        // guaranteed to render the correct result.
+        FcitxCandidateWordSetPageSize(cl, 10);
         FcitxCandidateWordReset(cl);
-        FcitxLog(INFO, "Building candidate list");
+
         FcitxCandidateWord cand;
         cand.owner = im;
         cand.callback = FcitxM17NGetCandWord;
