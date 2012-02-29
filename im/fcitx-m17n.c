@@ -211,17 +211,22 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
         m17n_object_unref(produced);
     }
 
-    char* preedit = mtextToUTF8(im->mic->preedit);
-    setPreedit(is, preedit);
-    FcitxInputStateSetClientCursorPos(is, fcitx_utf8_get_nth_char(preedit, im->mic->cursor_pos) - preedit);
+    if (im->mic->preedit_changed || im->mic->curosr_pos_changed) {
+        char* preedit = mtextToUTF8(im->mic->preedit);
+        setPreedit(is, preedit);
+        FcitxInputStateSetClientCursorPos(is, 
+            fcitx_utf8_get_nth_char(preedit, im->mic->cursor_pos) - preedit);
 
-    FcitxInstanceUpdatePreedit(inst, ic);
-    free(preedit);
+        FcitxInstanceUpdatePreedit(inst, ic);
+        free(preedit);
+    }
 
-    char* mstatus = mtextToUTF8(im->mic->status);
-    // TODO Fcitx should be able to show the status in some way.
-    FcitxLog(INFO, "mic status is %s", mstatus);
-    free(mstatus);
+    if (im->mic->status_changed) {
+        char* mstatus = mtextToUTF8(im->mic->status);
+        // TODO Fcitx should be able to show the status in some way.
+        FcitxLog(INFO, "mic status changed to %s", mstatus);
+        free(mstatus);
+    }
 
     return thru ? IRV_TO_PROCESS : IRV_DO_NOTHING;
 }
