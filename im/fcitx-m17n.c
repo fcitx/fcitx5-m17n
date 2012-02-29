@@ -175,6 +175,16 @@ FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
 
 INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
 {
+    /*
+     This is what Fcitx calls for each event it receives. The "return
+     value"-styled interaction is disregarded here since it doesn't allow
+     multiple operations during one DoInput call; instead, Fcitx operating
+     functions like FcitxInstanceUpdatePreedit are employed. Thus, most of
+     the time DoInput simply returns IRV_DO_NOTHING to suppress further
+     Fcitx-side processing. The only usage for the return value is when
+     libm17n let through the event; in that case, IRV_TO_PROCESS is returned.
+     */
+
     // FcitxLog(INFO, "DoInput got sym=%x, state=%x, hahaha", sym, state);
     MSymbol msym = FcitxM17NKeySymToSymbol(sym, state);
 
