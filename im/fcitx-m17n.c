@@ -83,8 +83,7 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
     return IRV_CLEAN;
 }
 
-MSymbol
-FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
+MSymbol FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
 {
     /*
      Rationale:
