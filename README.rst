@@ -24,23 +24,23 @@ Fcitx-m17n is maintained using CMake. To install, run::
   cmake .. [ FLAGS ] 
   make && make install
 
-To install to /usr, include `-DCMAKE_INSTALL_PREFIX=/usr` in `FLAGS`. To
-build with debug symbols, include `-DCMAKE_BUILD_TYPE`. You may as well
-replace `cmake` with `ccmake`, which gives you a nice curses UI to adjust
+To install to /usr, include ``-DCMAKE_INSTALL_PREFIX=/usr`` in ``FLAGS``. To
+build with debug symbols, include ``-DCMAKE_BUILD_TYPE``. You may as well
+replace ``cmake`` with ``ccmake``, which gives you a nice curses UI to adjust
 CMake flags.
 
 Dependencies is handled by CMake and therefore not listed here. But note that
 testmim uses some C++11 features and requires a recent C++ compiler. Latest
 clang will suffice.
 
-You may want to read `CMakeLists.txt` in the subdirectories.
+You may want to read ``CMakeLists.txt`` in the subdirectories.
 
 License
 =======
 
 All codes are currently licensed in LGPL 2.1.
 
-See `COPYING` for a copy of the license. A list of of fcitx-m17n authors and
+See ``COPYING`` for a copy of the license. A list of of fcitx-m17n authors and
 contributors is included herein:
 
 * Cheer Xiao
