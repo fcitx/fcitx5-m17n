@@ -5,31 +5,30 @@
 MPlist *
 minput_list (MSymbol language)
 {
-    MPlist *imlist;
-    MPlist *elm;
-    MPlist *plist;
+    MPlist *plist, *pl;
+    MPlist *imlist = mplist ();
 
-    plist = mplist ();
-    imlist = mdatabase_list(msymbol("input-method"), language, Mnil, Mnil);
-    for (elm = imlist; elm && mplist_key(elm) != Mnil; elm = mplist_next(elm)) {
-        MDatabase *mdb = (MDatabase *) mplist_value(elm);
-        MSymbol *tag = mdatabase_tag(mdb);
-        MSymbol lang = tag[1];
-        MSymbol name = tag[2];
-        MPlist *l;
+    plist = mdatabase_list (msymbol("input-method"), language, Mnil, Mnil);
+    if (! plist)
+        return imlist;
+    for (pl = plist; pl && mplist_key(pl) != Mnil; pl = mplist_next (pl))
+    {
+        MDatabase *mdb = mplist_value (pl);
+        MSymbol *tag = mdatabase_tag (mdb);
+        MPlist *elm;
 
-        l = mplist ();
-        mplist_add (l, Msymbol, lang);
-        mplist_add (l, Msymbol, name);
+        elm = mplist ();
+        mplist_add (elm, Msymbol, tag[1]);
+        mplist_add (elm, Msymbol, tag[2]);
         if (tag[1] != Mnil && tag[2] != Mnil) {
-            mplist_add (l, Msymbol, Mt);
+            mplist_add (elm, Msymbol, Mt);
         } else {
-            mplist_add (l, Msymbol, Mnil);
+            mplist_add (elm, Msymbol, Mnil);
         }
-        mplist_add (plist, Mplist, l);
-        m17n_object_unref (l);
+        mplist_push (imlist, Mplist, elm);
+        m17n_object_unref (elm);
     }
-    if (imlist)
-        m17n_object_unref (imlist);
-    return plist;
+    m17n_object_unref (plist);
+    return imlist;
 }
+

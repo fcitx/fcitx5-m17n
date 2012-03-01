@@ -80,10 +80,32 @@ char* mtextToUTF8(MText* mt)
 
 // Don't use this for large indices or (worse) list iteration.
 void *mplistSub(MPlist *head, size_t idx) {
+    
     while (idx--) {
+        if (!head)
+            return NULL;
         head = mplist_next(head);
     }
     return mplist_value(head);
+}
+
+int GetPageSize(IM* im)
+{
+    int value = 0;
+    MPlist* plist = minput_get_variable (im->mim->language, im->mim->name, msymbol ("candidates-group-size"));
+    void* head = NULL, *state = NULL;
+    if (plist) {
+        head = mplistSub(plist, 0);
+        state = mplistSub(head, 2);
+    }
+    if (state == NULL || state == Minherited) {
+        MPlist* plist = minput_get_variable (Mt, Mnil, msymbol ("candidates-group-size"));
+        if (!plist)
+            return value;
+        head = mplistSub(plist, 0);
+        value = (int) ( (int64_t) (mplistSub(head, 3)));
+    }
+    return value;
 }
 
 inline static void setPreedit(FcitxInputState* is, const char* s, int cursor_pos)
@@ -96,9 +118,12 @@ inline static void setPreedit(FcitxInputState* is, const char* s, int cursor_pos
     
     m = FcitxInputStateGetPreedit(is);
     FcitxMessagesSetMessageCount(m, 0);
-    FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
-    FcitxInputStateSetClientCursorPos(is, 
-        fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
+    if (strlen(s) != 0) {
+        FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
+        FcitxInputStateSetShowCursor(is, true);
+        FcitxInputStateSetCursorPos(is, 
+            fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
+    }
 }
 
 INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
@@ -121,11 +146,33 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
         lastIdx = im->mic->candidate_index;
     } while(im->mic->candidate_list && im->mic->candidate_show);
     
+    if (!im->mic->candidate_list || !im->mic->candidate_show || *idx != im->mic->candidate_index)
+        return IRV_TO_PROCESS;
+    
+    MPlist *head = im->mic->candidate_list;
+    
+    int i = 0;
+    while (1) {
+        int len;
+        if (mplist_key (head) == Mtext)
+            len = mtext_len ((MText *) mplist_value (head));
+        else
+            len = mplist_length ((MPlist *) mplist_value (head));
+
+        if (i + len > *idx)
+            break;
+
+        i += len;
+        head = mplist_next (head);
+    }
+    
+    int delta = *idx - i;
+    
     FcitxKeySym sym = FcitxKey_1;
-    if ((*idx + 1) % 10 == 0)
+    if ((delta + 1) % 10 == 0)
         sym = FcitxKey_0;
     else
-        sym += *idx % 10;
+        sym += delta % 10;
     INPUT_RETURN_VALUE result = FcitxM17NDoInputInternal(im, sym, FcitxKeyState_None);;
     im->forward = false;
     return result;
@@ -161,9 +208,13 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
     }
 
     FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
-    // TODO This is not the correct way to do things, though it is
-    // guaranteed to render the correct result.
-    FcitxCandidateWordSetPageSize(cl, 10);
+    int value = GetPageSize(im);
+    
+    if (value)
+        FcitxCandidateWordSetPageSize(cl, value);
+    else
+        FcitxCandidateWordSetPageSize(cl, 10);
+    FcitxCandidateWordSetChoose(cl, DIGIT_STR_CHOOSE);
     FcitxCandidateWordReset(cl);
 
     FcitxCandidateWord cand;
@@ -177,7 +228,7 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
         MPlist *head = im->mic->candidate_list;
         boolean flag = false;
         int index = 0;
-        for (; head; head = mplist_next(head)) {
+        for (; head && mplist_key(head) != Mnil; head = mplist_next(head)) {
             MSymbol key = mplist_key(head);
             if (key == Mplist) {
                 MPlist *head2 = mplist_value(head);
@@ -336,14 +387,17 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
     if (FcitxCandidateWordGetListSize(FcitxInputStateGetCandidateList(is)) > 0
         && (
             FcitxHotkeyIsHotKeyDigit(sym, state)
-            || FcitxHotkeyIsHotKey(sym, state, FCITX_RIGHT)
-            || FcitxHotkeyIsHotKey(sym, state, FCITX_LEFT)
             || FcitxHotkeyIsHotKey(sym, state, FCITX_M17N_UP)
             || FcitxHotkeyIsHotKey(sym, state, FCITX_M17N_DOWN)
             || FcitxHotkeyIsHotKey(sym, state, im->owner->config.hkPrevPage)
             || FcitxHotkeyIsHotKey(sym, state, im->owner->config.hkNextPage)
         ))
         return IRV_TO_PROCESS;
+    
+    if (FcitxCandidateWordGetListSize(FcitxInputStateGetCandidateList(is)) > 0
+        && (FcitxHotkeyIsHotKey(sym, state, FCITX_RIGHT)
+            || FcitxHotkeyIsHotKey(sym, state, FCITX_LEFT)))
+        return IRV_DO_NOTHING;
 
     return FcitxM17NDoInputInternal(im, sym, state);
 }
