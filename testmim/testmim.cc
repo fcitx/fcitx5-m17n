@@ -1,3 +1,9 @@
+#include "config.h"
+
+#ifdef NEED_MINPUT_LIST
+#include "minput_list.h"
+#endif
+
 #include <string>
 #include <sstream>
 #include <string.h>

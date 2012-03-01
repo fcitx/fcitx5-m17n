@@ -1,12 +1,17 @@
-include_directories (${M17N_INCLUDE_DIR})
-include_directories (${FCITX4_FCITX_INCLUDE_DIRS})
-include_directories (${FCITX4_FCITX_CONFIG_INCLUDE_DIRS})
-include_directories (${FCITX4_FCITX_UTILS_INCLUDE_DIRS})
+include_directories (${M17N_INCLUDE_DIR}
+                     ${PROJECT_BINARY_DIR}
+                     ${FCITX4_FCITX_INCLUDE_DIRS}
+                     ${FCITX4_FCITX_CONFIG_INCLUDE_DIRS}
+                     ${FCITX4_FCITX_UTILS_INCLUDE_DIRS})
 
 set( fcitx_m17n_sources
     fcitx-m17n.c
     keyname.c
     )
+
+if (NEED_MINPUT_LIST)
+    set(fcitx_m17n_sources ${fcitx_m17n_sources} minput_list.c)
+endif (NEED_MINPUT_LIST)
 
 add_definitions( -DLOCALEDIR=\"${CMAKE_INSTALL_PREFIX}/share/locale\" )
 

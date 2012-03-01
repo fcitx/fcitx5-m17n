@@ -24,6 +24,13 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -fvis
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_SHARED_LINKER_FLAGS}")
 set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_MODULE_LINKER_FLAGS}")
 add_definitions(-D_GNU_SOURCE)
+if (M17N_VERSION VERSION_LESS "1.6.3")
+    set(NEED_MINPUT_LIST 1)
+else (M17N_VERSION VERSION_LESS "1.6.3")
+    set(NEED_MINPUT_LIST 0)
+endif (M17N_VERSION VERSION_LESS "1.6.3")
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 add_subdirectory(im)
 add_subdirectory(po)

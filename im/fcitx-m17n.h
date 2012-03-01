@@ -22,6 +22,7 @@
 #define __FCITX_M17N_H
 
 #include <m17n.h>
+#include <fcitx-config/fcitx-config.h>
 
 struct _FcitxInstance;
 
@@ -35,6 +36,7 @@ typedef struct {
     struct _Addon* owner;
     MInputMethod* mim;
     MInputContext* mic;
+    boolean forward;
 } IM;
 
 typedef struct _Addon {

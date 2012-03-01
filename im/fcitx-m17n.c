@@ -18,6 +18,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "config.h"
+
+#ifdef NEED_MINPUT_LIST
+#include "minput_list.h"
+#endif
 
 #include <string.h>
 #include <stdlib.h>
@@ -71,21 +76,104 @@ void *mplistSub(MPlist *head, size_t idx) {
     return mplist_value(head);
 }
 
-inline static void setPreedit(FcitxInputState* is, const char* s)
+inline static void setPreedit(FcitxInputState* is, const char* s, int cursor_pos)
 {
     FcitxMessages* m = FcitxInputStateGetClientPreedit(is);
     FcitxMessagesSetMessageCount(m, 0);
     FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
+    FcitxInputStateSetClientCursorPos(is, 
+        fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
+    
+    m = FcitxInputStateGetPreedit(is);
+    FcitxMessagesSetMessageCount(m, 0);
+    FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
+    FcitxInputStateSetClientCursorPos(is, 
+        fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
 }
 
 INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
     return IRV_DO_NOTHING;
 }
 
-// Never called
 INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
 {
-    return IRV_TO_PROCESS;
+    IM* im = (IM*) arg;
+    FcitxInstance* inst = im->owner->owner;
+    FcitxInputState* is = FcitxInstanceGetInputState(inst);
+    
+    boolean toShow = false;
+    
+    if (im->mic->preedit) {
+        char* preedit = mtextToUTF8(im->mic->preedit);
+        toShow = toShow || (strlen(preedit) != 0);
+        if (toShow) {
+            FcitxLog(DEBUG, "preedit is %s", preedit);
+            setPreedit(is, preedit, im->mic->cursor_pos);
+        }
+        free(preedit);
+    }
+
+    if (im->mic->status) {
+        char* mstatus = mtextToUTF8(im->mic->status);
+        toShow = toShow || (strlen(mstatus) != 0);
+        if (strlen(mstatus) != 0) {
+            FcitxLog(DEBUG, "IM status changed to %s", mstatus);
+            // FcitxMessages* auxDown = FcitxInputStateGetAuxUpDown(is);
+            // FcitxMessagesAddMessageAtLast(auxDown, MSG_TIPS, "%s ", mstatus);
+        }
+        free(mstatus);
+    }
+
+    FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
+    // TODO This is not the correct way to do things, though it is
+    // guaranteed to render the correct result.
+    FcitxCandidateWordSetPageSize(cl, 10);
+    FcitxCandidateWordReset(cl);
+
+    FcitxCandidateWord cand;
+    cand.owner = im;
+    cand.callback = FcitxM17NGetCandWord;
+    cand.priv = NULL;
+    cand.strExtra = NULL;
+    cand.wordType = MSG_OTHER;
+    
+    if (im->mic->candidate_list && im->mic->candidate_show) {
+        MPlist *head = im->mic->candidate_list;
+        boolean flag = false;
+        for (; head; head = mplist_next(head)) {
+            MSymbol key = mplist_key(head);
+            if (key == Mplist) {
+                MPlist *head2 = mplist_value(head);
+                for (; head2; head2 = mplist_next(head2)) {
+                    MText *word = mplist_value(head2);
+                    // Fcitx will do the free() for us.
+                    cand.strWord = mtextToUTF8(word);
+                    m17n_object_unref(word);
+                    FcitxCandidateWordAppend(cl, &cand);
+                    flag = true;
+                }
+            } else if (key == Mtext) {
+                char *words = mtextToUTF8((MText*) mplist_value(head));
+                char *p, *q;
+                for (p = words; *p; p = q) {
+                    int unused;
+                    q = fcitx_utf8_get_char(p, &unused);
+                    cand.strWord = strndup(p, q-p);
+                    FcitxCandidateWordAppend(cl, &cand);
+                    flag = true;
+                }
+                free(words);
+            } else {
+                FcitxLog(DEBUG, "Invalid MSymbol: %s", msymbol_name(key));
+            }
+        }
+        toShow = toShow || flag;
+    }
+    
+    if (im->forward)
+        return IRV_DISPLAY_CANDWORDS | IRV_FLAG_FORWARD_KEY;
+    else
+        return IRV_DISPLAY_CANDWORDS;
 }
 
 MSymbol FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
@@ -202,12 +290,13 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
     }
 
     IM* im = (IM*) arg;
+    im->forward = false;
     FcitxInstance* inst = im->owner->owner;
-    FcitxInputState* is = FcitxInstanceGetInputState(inst);
     FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
 
     int thru = 0;
     if (!minput_filter(im->mic, msym, NULL)) {
+        FcitxLog(INFO, "Process Key");
         MText* produced = mtext();
         // If input symbol was let through by m17n, let Fcitx handle it.
         // m17n may still produce some text to commit, though.
@@ -215,73 +304,16 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
         if (mtext_len(produced) > 0) {
             char* buf = mtextToUTF8(produced);
             FcitxInstanceCommitString(inst, ic, buf);
+            FcitxLog(INFO, "Commit: %s", buf);
             free(buf);
         }
         m17n_object_unref(produced);
     }
+    
+    if (thru)
+        im->forward = true;
 
-    if (im->mic->preedit_changed || im->mic->cursor_pos_changed) {
-        char* preedit = mtextToUTF8(im->mic->preedit);
-        FcitxLog(INFO, "preedit is %s", preedit);
-        setPreedit(is, preedit);
-        FcitxInputStateSetClientCursorPos(is, 
-            fcitx_utf8_get_nth_char(preedit, im->mic->cursor_pos) - preedit);
-
-        FcitxInstanceUpdatePreedit(inst, ic);
-        free(preedit);
-    }
-
-    if (im->mic->status_changed) {
-        char* mstatus = mtextToUTF8(im->mic->status);
-        // TODO Fcitx should be able to show the status in some way.
-        FcitxLog(INFO, "IM status changed to %s", mstatus);
-        free(mstatus);
-    }
-
-    if (im->mic->candidates_changed) {
-        FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
-        // TODO This is not the correct way to do things, though it is
-        // guaranteed to render the correct result.
-        FcitxCandidateWordSetPageSize(cl, 10);
-        FcitxCandidateWordReset(cl);
-
-        FcitxCandidateWord cand;
-        cand.owner = im;
-        cand.callback = FcitxM17NGetCandWord;
-        cand.priv = NULL;
-        cand.strExtra = NULL;
-        cand.wordType = MSG_OTHER;
-
-        MPlist *head = im->mic->candidate_list;
-        for (; head; head = mplist_next(head)) {
-            MSymbol key = mplist_key(head);
-            if (key == Mplist) {
-                MPlist *head2 = mplist_value(head);
-                for (; head2; head2 = mplist_next(head2)) {
-                    MText *word = mplist_value(head2);
-                    // Fcitx will do the free() for us.
-                    cand.strWord = mtextToUTF8(word);
-                    m17n_object_unref(word);
-                    FcitxCandidateWordAppend(cl, &cand);
-                }
-            } else if (key == Mtext) {
-                char *words = mtextToUTF8((MText*) mplist_value(head));
-                char *p, *q;
-                for (p = words; *p; p = q) {
-                    int unused;
-                    q = fcitx_utf8_get_char(p, &unused);
-                    cand.strWord = strndup(p, q-p);
-                    FcitxCandidateWordAppend(cl, &cand);
-                }
-                free(words);
-            } else {
-                FcitxLog(INFO, "%s", msymbol_name(key));
-            }
-        }
-        FcitxUIUpdateInputWindow(inst);
-    }
-
-    return thru ? IRV_FLAG_FORWARD_KEY : IRV_DO_NOTHING;
+    return IRV_DISPLAY_CANDWORDS;
 }
 
 void FcitxM17NReset(void *arg)
