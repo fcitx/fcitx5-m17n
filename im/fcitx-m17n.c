@@ -30,6 +30,8 @@
 #include <libintl.h>
 #include <locale.h>
 #include <m17n.h>
+#include <errno.h>
+#include <fcitx-config/xdg.h>
 #include <fcitx-utils/log.h>
 #include <fcitx-utils/utf8.h>
 #include <fcitx/keys.h>
@@ -51,8 +53,16 @@ FcitxIMClass ime = {
 FCITX_EXPORT_API
 int ABI_VERSION = FCITX_ABI_VERSION;
 
+FcitxHotkey FCITX_M17N_UP[2] = {{NULL, FcitxKey_Up, 0}, {NULL, 0, 0}};
+FcitxHotkey FCITX_M17N_DOWN[2] = {{NULL, FcitxKey_Down, 0}, {NULL, 0, 0}};
+
 const char*
 KeySymName (FcitxKeySym keyval);
+
+INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state);
+INPUT_RETURN_VALUE FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned int state);
+static boolean LoadM17NConfig(FcitxM17NConfig* fs);
+static void SaveM17NConfig(FcitxM17NConfig* fs);
 
 char* mtextToUTF8(MText* mt)
 {
@@ -62,9 +72,9 @@ char* mtextToUTF8(MText* mt)
 
     MConverter* mconv = mconv_buffer_converter(Mcoding_utf_8, (unsigned char*) buf, bufsize);
     mconv_encode(mconv, mt);
-    mconv_free_converter(mconv);
 
     buf[mconv->nbytes] = '\0';
+    mconv_free_converter(mconv);
     return buf;
 }
 
@@ -92,7 +102,33 @@ inline static void setPreedit(FcitxInputState* is, const char* s, int cursor_pos
 }
 
 INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
-    return IRV_DO_NOTHING;
+    
+    IM* im = (IM*) arg;
+    int* idx = (int*) cand->priv;
+    
+    int lastIdx = im->mic->candidate_index;
+    do {
+        if (*idx == im->mic->candidate_index) {
+            break;
+        }
+        if (*idx > im->mic->candidate_index)
+            FcitxM17NDoInputInternal(im, FcitxKey_Right, FcitxKeyState_None);
+        else if (*idx < im->mic->candidate_index)
+            FcitxM17NDoInputInternal(im, FcitxKey_Left, FcitxKeyState_None);
+        /* though useless, but take care if there is a bug cause freeze */
+        if (lastIdx == im->mic->candidate_index)
+            break;
+        lastIdx = im->mic->candidate_index;
+    } while(im->mic->candidate_list && im->mic->candidate_show);
+    
+    FcitxKeySym sym = FcitxKey_1;
+    if ((*idx + 1) % 10 == 0)
+        sym = FcitxKey_0;
+    else
+        sym += *idx % 10;
+    INPUT_RETURN_VALUE result = FcitxM17NDoInputInternal(im, sym, FcitxKeyState_None);;
+    im->forward = false;
+    return result;
 }
 
 INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
@@ -140,6 +176,7 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
     if (im->mic->candidate_list && im->mic->candidate_show) {
         MPlist *head = im->mic->candidate_list;
         boolean flag = false;
+        int index = 0;
         for (; head; head = mplist_next(head)) {
             MSymbol key = mplist_key(head);
             if (key == Mplist) {
@@ -148,9 +185,13 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
                     MText *word = mplist_value(head2);
                     // Fcitx will do the free() for us.
                     cand.strWord = mtextToUTF8(word);
+                    cand.priv = fcitx_utils_malloc0(sizeof(int));
+                    int* candIdx = (int*) cand.priv;
+                    *candIdx = index;
                     m17n_object_unref(word);
                     FcitxCandidateWordAppend(cl, &cand);
                     flag = true;
+                    index ++;
                 }
             } else if (key == Mtext) {
                 char *words = mtextToUTF8((MText*) mplist_value(head));
@@ -159,8 +200,12 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
                     int unused;
                     q = fcitx_utf8_get_char(p, &unused);
                     cand.strWord = strndup(p, q-p);
+                    cand.priv = fcitx_utils_malloc0(sizeof(int));
+                    int* candIdx = (int*) cand.priv;
+                    *candIdx = index;
                     FcitxCandidateWordAppend(cl, &cand);
                     flag = true;
+                    index ++;
                 }
                 free(words);
             } else {
@@ -282,21 +327,39 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
      */
 
     // FcitxLog(INFO, "DoInput got sym=%x, state=%x, hahaha", sym, state);
+
+    IM* im = (IM*) arg;
+    im->forward = false;
+    FcitxInstance* inst = im->owner->owner;
+    FcitxInputState* is = FcitxInstanceGetInputState(inst);
+    
+    if (FcitxCandidateWordGetListSize(FcitxInputStateGetCandidateList(is)) > 0
+        && (
+            FcitxHotkeyIsHotKeyDigit(sym, state)
+            || FcitxHotkeyIsHotKey(sym, state, FCITX_RIGHT)
+            || FcitxHotkeyIsHotKey(sym, state, FCITX_LEFT)
+            || FcitxHotkeyIsHotKey(sym, state, FCITX_M17N_UP)
+            || FcitxHotkeyIsHotKey(sym, state, FCITX_M17N_DOWN)
+            || FcitxHotkeyIsHotKey(sym, state, im->owner->config.hkPrevPage)
+            || FcitxHotkeyIsHotKey(sym, state, im->owner->config.hkNextPage)
+        ))
+        return IRV_TO_PROCESS;
+
+    return FcitxM17NDoInputInternal(im, sym, state);
+}
+
+INPUT_RETURN_VALUE FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned int state)
+{
     MSymbol msym = FcitxM17NKeySymToSymbol(sym, state);
+    FcitxInstance* inst = im->owner->owner;
+    FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
 
     if (msym == Mnil) {
         FcitxLog(DEBUG, "sym=%x, state=%x, not my dish", sym, state);
         return IRV_TO_PROCESS;
     }
-
-    IM* im = (IM*) arg;
-    im->forward = false;
-    FcitxInstance* inst = im->owner->owner;
-    FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
-
     int thru = 0;
     if (!minput_filter(im->mic, msym, NULL)) {
-        FcitxLog(INFO, "Process Key");
         MText* produced = mtext();
         // If input symbol was let through by m17n, let Fcitx handle it.
         // m17n may still produce some text to commit, though.
@@ -304,7 +367,7 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
         if (mtext_len(produced) > 0) {
             char* buf = mtextToUTF8(produced);
             FcitxInstanceCommitString(inst, ic, buf);
-            FcitxLog(INFO, "Commit: %s", buf);
+            FcitxLog(DEBUG, "Commit: %s", buf);
             free(buf);
         }
         m17n_object_unref(produced);
@@ -331,12 +394,15 @@ boolean FcitxM17NInit(void *arg)
     boolean flag = true;
     FcitxInstanceSetContext(inst, CONTEXT_DISABLE_AUTOENG, &flag);
     FcitxInstanceSetContext(inst, CONTEXT_DISABLE_QUICKPHRASE, &flag);
+    FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_PREVPAGE_KEY, im->owner->config.hkPrevPage);
+    FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_NEXTPAGE_KEY, im->owner->config.hkNextPage);
     return true;
 }
 
 void FcitxM17NReload(void *arg)
 {
-    // FcitxLog(INFO, "Reload called, hahaha");
+    IM* im = (IM*) arg;
+    LoadM17NConfig(&im->owner->config);
 }
 
 void FcitxM17NSave(void *arg)
@@ -371,10 +437,17 @@ void delIM(IM* im)
 void *FcitxM17NCreate(FcitxInstance* inst)
 {
     bindtextdomain(TEXTDOMAIN, LOCALEDIR);
-    M17N_INIT();
+    
 
     Addon* addon = (Addon*) fcitx_utils_malloc0(sizeof(Addon));
     addon->owner = inst;
+
+    if (!LoadM17NConfig(&addon->config))
+    {
+        free(addon);
+        return NULL;
+    }
+    M17N_INIT();
 
     MPlist *mimlist = minput_list(Mnil);
     addon->nim = mplist_length(mimlist);
@@ -458,3 +531,36 @@ void FcitxM17NDestroy(void *arg)
     M17N_FINI();
 }
 
+CONFIG_DESC_DEFINE(GetM17NConfigDesc, "fcitx-m17n.desc")
+
+static boolean LoadM17NConfig(FcitxM17NConfig* fs)
+{
+    FcitxConfigFileDesc *configDesc = GetM17NConfigDesc();
+    if (!configDesc)
+        return false;
+
+    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", "fcitx-m17n.config", "rt", NULL);
+
+    if (!fp)
+    {
+        if (errno == ENOENT)
+            SaveM17NConfig(fs);
+    }
+    FcitxConfigFile *cfile = FcitxConfigParseConfigFileFp(fp, configDesc);
+
+    FcitxM17NConfigConfigBind(fs, cfile, configDesc);
+    FcitxConfigBindSync(&fs->gconfig);
+
+    if (fp)
+        fclose(fp);
+    return true;
+}
+
+static void SaveM17NConfig(FcitxM17NConfig* fs)
+{
+    FcitxConfigFileDesc *configDesc = GetM17NConfigDesc();
+    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", "fcitx-m17n.config", "wt", NULL);
+    FcitxConfigSaveConfigFileFp(fp, &fs->gconfig, configDesc);
+    if (fp)
+        fclose(fp);
+}
