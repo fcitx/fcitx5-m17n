@@ -1,9 +1,9 @@
 [M17N/PrevPage]
 Description=Zhuyin Prev Page
 Type=Hotkey
-DefaultValue=UP
+DefaultValue=UP CTRL_P
 
 [M17N/NextPage]
 Description=Zhuyin Next Page
 Type=Hotkey
-DefaultValue=DOWN
+DefaultValue=DOWN CTRL_N

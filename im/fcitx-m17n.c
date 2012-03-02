@@ -53,8 +53,8 @@ FcitxIMClass ime = {
 FCITX_EXPORT_API
 int ABI_VERSION = FCITX_ABI_VERSION;
 
-FcitxHotkey FCITX_M17N_UP[2] = {{NULL, FcitxKey_Up, 0}, {NULL, 0, 0}};
-FcitxHotkey FCITX_M17N_DOWN[2] = {{NULL, FcitxKey_Down, 0}, {NULL, 0, 0}};
+FcitxHotkey FCITX_M17N_UP[2] = {{NULL, FcitxKey_Up, 0}, {NULL, FcitxKey_P, FcitxKeyState_Ctrl}};
+FcitxHotkey FCITX_M17N_DOWN[2] = {{NULL, FcitxKey_Down, 0}, {NULL, FcitxKey_N, FcitxKeyState_Ctrl}};
 
 const char*
 KeySymName (FcitxKeySym keyval);
@@ -98,13 +98,15 @@ int getPageSize(IM* im)
         head = mplistSub(plist, 0);
         state = mplistSub(head, 2);
     }
-    if (state == NULL || state == Minherited) {
+    if (state == NULL) {
         MPlist* plist = minput_get_variable (Mt, Mnil, msymbol ("candidates-group-size"));
         if (!plist)
             return value;
         head = mplistSub(plist, 0);
-        value = (int) ( (int64_t) (mplistSub(head, 3)));
+        value = (int) ( (intptr_t) (mplistSub(head, 3)));
     }
+    else
+        value = (int) ( (intptr_t) (mplistSub(head, 3)));
     return value;
 }
 
@@ -232,14 +234,13 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
             MSymbol key = mplist_key(head);
             if (key == Mplist) {
                 MPlist *head2 = mplist_value(head);
-                for (; head2; head2 = mplist_next(head2)) {
+                for (; head2 && mplist_key(head2) != Mnil; head2 = mplist_next(head2)) {
                     MText *word = mplist_value(head2);
                     // Fcitx will do the free() for us.
                     cand.strWord = mtextToUTF8(word);
                     cand.priv = fcitx_utils_malloc0(sizeof(int));
                     int* candIdx = (int*) cand.priv;
                     *candIdx = index;
-                    m17n_object_unref(word);
                     FcitxCandidateWordAppend(cl, &cand);
                     flag = true;
                     index ++;
@@ -450,6 +451,7 @@ boolean FcitxM17NInit(void *arg)
     FcitxInstanceSetContext(inst, CONTEXT_DISABLE_QUICKPHRASE, &flag);
     FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_PREVPAGE_KEY, im->owner->config.hkPrevPage);
     FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_NEXTPAGE_KEY, im->owner->config.hkNextPage);
+    FcitxInstanceSetContext(inst, CONTEXT_IM_KEYBOARD_LAYOUT, "us");
     return true;
 }
 
@@ -526,6 +528,22 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             FcitxLog(WARNING, "Insane IM [%s: %s]", lang, name);
             continue;
         }
+
+        MPlist* l = minput_get_variable (mlang, mname, msymbol ("candidates-charset"));
+        if (l) {
+            /* check candidates encoding */
+            MPlist *sl;
+            MSymbol varcharset;
+            
+            sl = mplist_value (l);
+            varcharset = mplistSub (sl, 3);
+            
+            if (varcharset != Mcoding_utf_8 ||
+                    varcharset != Mcoding_utf_8_full) {
+                continue;
+            }
+        }
+
         if (!(addon->ims[i] = makeIM(addon, mlang, mname))) {
             FcitxLog(ERROR, "Failed to create IM [%s: %s]", lang, name);
             continue;
@@ -538,7 +556,6 @@ void *FcitxM17NCreate(FcitxInstance* inst)
 
         info = minput_get_title_icon(mlang, mname);
         // head of info is a MText
-        m17n_object_unref(mplistSub(info, 0));
         MText *iconPath = (MText*) mplistSub(info, 1);
 
         if (iconPath) {
@@ -548,7 +565,6 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             // /usr/share/m17n/icons/... on Linux systems, this is a
             // reasonable assumption.
             iconName = mtextToUTF8(iconPath);
-            m17n_object_unref(iconPath);
             FcitxLog(INFO, "Mim icon is %s", iconName);
         } else {
             iconName = uniqueName;
