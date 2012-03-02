@@ -89,7 +89,7 @@ void *mplistSub(MPlist *head, size_t idx) {
     return mplist_value(head);
 }
 
-int GetPageSize(IM* im)
+int getPageSize(IM* im)
 {
     int value = 0;
     MPlist* plist = minput_get_variable (im->mim->language, im->mim->name, msymbol ("candidates-group-size"));
@@ -208,7 +208,7 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
     }
 
     FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
-    int value = GetPageSize(im);
+    int value = getPageSize(im);
     
     if (value)
         FcitxCandidateWordSetPageSize(cl, value);
