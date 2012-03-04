@@ -26,10 +26,9 @@
 #include <fcitx-config/hotkey.h>
 #include <fcitx/instance.h>
 
-struct _FcitxInstance;
+typedef INPUT_RETURN_VALUE FcitxIRV;
 
-void *FcitxM17NCreate(FcitxInstance *instance);
-void FcitxM17NDestroy(void *arg);
+struct _FcitxInstance;
 
 typedef struct _FcitxM17NConfig
 {
@@ -38,13 +37,13 @@ typedef struct _FcitxM17NConfig
     FcitxHotkey hkNextPage[2];
 } FcitxM17NConfig;
 
-
 struct _Addon;
 typedef struct {
     struct _Addon* owner;
     MInputMethod* mim;
     MInputContext* mic;
     boolean forward;
+    int pageSize;
 } IM;
 
 typedef struct _Addon {
@@ -55,5 +54,8 @@ typedef struct _Addon {
 } Addon;
 
 CONFIG_BINDING_DECLARE(FcitxM17NConfig);
+
+void *FcitxM17NCreate(FcitxInstance *instance);
+void FcitxM17NDestroy(void *arg);
 
 #endif

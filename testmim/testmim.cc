@@ -63,6 +63,32 @@ int mplist_print_text_values(FILE *of, MPlist *plist, const char *sep)
     return re;
 }
 
+void *mplist_sub(MPlist *head, size_t idx) {
+    while (idx--) {
+        if (!head) {
+            return NULL;
+        }
+        head = mplist_next(head);
+    }
+    return mplist_value(head);
+}
+
+int get_page_size(MSymbol mlang, MSymbol mname, int fallback)
+{
+    MPlist* plist = minput_get_variable(
+            mlang, mname, msymbol("candidates-group-size"));
+    if (plist == NULL) {
+        if (mlang == Mt && mname == Mnil) {
+            return fallback;
+        } else {
+            // tail recursion
+            return get_page_size(Mt, Mnil, fallback);
+        }
+    }
+    void *head = mplist_value(plist);
+    return (int) (intptr_t) mplist_sub((MPlist*) head, 3);
+}
+
 int process_sym_stepped(MInputContext *ic, MSymbol sym)
 {
     int re;
@@ -187,6 +213,7 @@ int main()
             continue;
         }
 
+        fprintf(stderr, "page size is %d\n", get_page_size(mlang, mname, 10));
 #ifdef SHOW_DESC
         // Show description
         m17n::Text mdesc = minput_get_description(mlang, mname);

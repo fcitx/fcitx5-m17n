@@ -28,6 +28,7 @@
 #include <fcitx-config/hotkey.h>
 
 #include "keyname.h"
+#include "keysymname.h"
 
 #define NUM_KEYS (sizeof(gdk_keys_by_keyval) / sizeof(gdk_keys_by_keyval[0]))
 
