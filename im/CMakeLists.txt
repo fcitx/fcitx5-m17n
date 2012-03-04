@@ -6,8 +6,8 @@ include_directories (${M17N_INCLUDE_DIR}
 
 set( fcitx_m17n_sources
     fcitx-m17n.c
-    keyname.c
-    m17nconfig.c
+    keysymname.c
+    config.c
     )
 
 if (NEED_MINPUT_LIST)

@@ -40,7 +40,9 @@
 #include <fcitx/candidate.h>
 
 #include "fcitx-m17n.h"
+#include "keysymname.h"
 
+#define CONF_FNAME "fcitx-m17n.config"
 #define TEXTDOMAIN "fcitx-m17n"
 #define _(x) dgettext(TEXTDOMAIN, x)
 
@@ -53,16 +55,20 @@ FcitxIMClass ime = {
 FCITX_EXPORT_API
 int ABI_VERSION = FCITX_ABI_VERSION;
 
-FcitxHotkey FCITX_M17N_UP[2] = {{NULL, FcitxKey_Up, 0}, {NULL, 0, 0}};
-FcitxHotkey FCITX_M17N_DOWN[2] = {{NULL, FcitxKey_Down, 0}, {NULL, 0, 0}};
+FcitxHotkey FCITX_M17N_UP[2] = {
+    { NULL, FcitxKey_Up, 0 },
+    { NULL, FcitxKey_P, FcitxKeyState_Ctrl },
+};
 
-const char*
-KeySymName (FcitxKeySym keyval);
+FcitxHotkey FCITX_M17N_DOWN[2] = {
+    { NULL, FcitxKey_Down, 0 },
+    { NULL, FcitxKey_N, FcitxKeyState_Ctrl }
+};
 
-INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state);
-INPUT_RETURN_VALUE FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned int state);
-static boolean LoadM17NConfig(FcitxM17NConfig* fs);
-static void SaveM17NConfig(FcitxM17NConfig* fs);
+FcitxIRV FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state);
+FcitxIRV FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned state);
+static boolean loadConfig(FcitxM17NConfig* fs);
+static void saveConfig(FcitxM17NConfig* fs);
 
 char* mtextToUTF8(MText* mt)
 {
@@ -80,32 +86,27 @@ char* mtextToUTF8(MText* mt)
 
 // Don't use this for large indices or (worse) list iteration.
 void *mplistSub(MPlist *head, size_t idx) {
-    
     while (idx--) {
-        if (!head)
-            return NULL;
         head = mplist_next(head);
     }
     return mplist_value(head);
 }
 
-int GetPageSize(IM* im)
+int getPageSize(MSymbol mlang, MSymbol mname)
 {
-    int value = 0;
-    MPlist* plist = minput_get_variable (im->owner->mim->language, im->owner->mim->name, msymbol ("candidates-group-size"));
-    void* head = NULL, *state = NULL;
-    if (plist) {
-        head = mplistSub(plist, 0);
-        state = mplistSub(head, 2);
+    MPlist* plist = minput_get_variable(
+            mlang, mname, msymbol("candidates-group-size"));
+    if (plist == NULL) {
+        if (mlang == Mt && mname == Mnil) {
+            // XXX magic number
+            return 10;
+        } else {
+            // tail recursion
+            return getPageSize(Mt, Mnil);
+        }
     }
-    if (state == NULL || state == Minherited) {
-        MPlist* plist = minput_get_variable (Mt, Mnil, msymbol ("candidates-group-size"));
-        if (!plist)
-            return value;
-        head = mplistSub(plist, 0);
-        value = (int) ( (int64_t) (mplistSub(head, 3)));
-    }
-    return value;
+    MPlist *varinfo = (MPlist*) mplist_value(plist);
+    return (int) (intptr_t) mplistSub(varinfo, 3);
 }
 
 inline static void setPreedit(FcitxInstance* inst, FcitxInputState* is, const char* s, int cursor_pos)
@@ -116,7 +117,6 @@ inline static void setPreedit(FcitxInstance* inst, FcitxInputState* is, const ch
     FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
     FcitxInputStateSetClientCursorPos(is, 
         fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
-    
     if (ic && (ic->contextCaps & CAPACITY_PREEDIT) == 0) {
         m = FcitxInputStateGetPreedit(is);
         FcitxMessagesSetMessageCount(m, 0);
@@ -129,13 +129,12 @@ inline static void setPreedit(FcitxInstance* inst, FcitxInputState* is, const ch
     }
 }
 
-INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
-    
+FcitxIRV FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand)
+{
     IM* im = (IM*) arg;
     if (!im->owner->mic)
         return IRV_TO_PROCESS;
     int* idx = (int*) cand->priv;
-    
     int lastIdx = im->owner->mic->candidate_index;
     do {
         if (*idx == im->owner->mic->candidate_index) {
@@ -150,53 +149,56 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
             break;
         lastIdx = im->owner->mic->candidate_index;
     } while(im->owner->mic->candidate_list && im->owner->mic->candidate_show);
-    
+
     if (!im->owner->mic->candidate_list || !im->owner->mic->candidate_show || *idx != im->owner->mic->candidate_index)
         return IRV_TO_PROCESS;
-    
+
     MPlist *head = im->owner->mic->candidate_list;
-    
+
     int i = 0;
     while (1) {
         int len;
-        if (mplist_key (head) == Mtext)
+        if (mplist_key (head) == Mtext) {
             len = mtext_len ((MText *) mplist_value (head));
-        else
+        } else {
             len = mplist_length ((MPlist *) mplist_value (head));
+        }
 
-        if (i + len > *idx)
+        if (i + len > *idx) {
             break;
+        }
 
         i += len;
         head = mplist_next (head);
     }
-    
+
     int delta = *idx - i;
-    
+
     FcitxKeySym sym = FcitxKey_1;
     if ((delta + 1) % 10 == 0)
         sym = FcitxKey_0;
     else
         sym += delta % 10;
-    INPUT_RETURN_VALUE result = FcitxM17NDoInputInternal(im, sym, FcitxKeyState_None);;
+    FcitxIRV result = FcitxM17NDoInputInternal(im, sym, FcitxKeyState_None);;
     im->forward = false;
     return result;
 }
 
-INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
+FcitxIRV FcitxM17NGetCandWords(void *arg)
 {
     IM* im = (IM*) arg;
     if (!im->owner->mic)
         return IRV_TO_PROCESS;
     FcitxInstance* inst = im->owner->owner;
     FcitxInputState* is = FcitxInstanceGetInputState(inst);
-    
+
     boolean toShow = false;
-    
+    FcitxIRV ret = IRV_DO_NOTHING;
+
     if (im->owner->mic->preedit) {
         char* preedit = mtextToUTF8(im->owner->mic->preedit);
         toShow = toShow || (strlen(preedit) != 0);
-        if (toShow) {
+        if (strlen(preedit) > 0) {
             FcitxLog(DEBUG, "preedit is %s", preedit);
             setPreedit(inst, is, preedit, im->owner->mic->cursor_pos);
         }
@@ -215,12 +217,7 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
     }
 
     FcitxCandidateWordList *cl = FcitxInputStateGetCandidateList(is);
-    int value = GetPageSize(im);
-    
-    if (value)
-        FcitxCandidateWordSetPageSize(cl, value);
-    else
-        FcitxCandidateWordSetPageSize(cl, 10);
+    FcitxCandidateWordSetPageSize(cl, im->pageSize);
     FcitxCandidateWordSetChoose(cl, DIGIT_STR_CHOOSE);
     FcitxCandidateWordReset(cl);
 
@@ -230,25 +227,23 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
     cand.priv = NULL;
     cand.strExtra = NULL;
     cand.wordType = MSG_OTHER;
-    
     if (im->owner->mic->candidate_list && im->owner->mic->candidate_show) {
         MPlist *head = im->owner->mic->candidate_list;
-        boolean flag = false;
+        boolean hasCand = false;
         int index = 0;
         for (; head && mplist_key(head) != Mnil; head = mplist_next(head)) {
             MSymbol key = mplist_key(head);
             if (key == Mplist) {
                 MPlist *head2 = mplist_value(head);
-                for (; head2; head2 = mplist_next(head2)) {
+                for (; head2 && mplist_key(head2) != Mnil; head2 = mplist_next(head2)) {
                     MText *word = mplist_value(head2);
                     // Fcitx will do the free() for us.
                     cand.strWord = mtextToUTF8(word);
                     cand.priv = fcitx_utils_malloc0(sizeof(int));
                     int* candIdx = (int*) cand.priv;
                     *candIdx = index;
-                    m17n_object_unref(word);
                     FcitxCandidateWordAppend(cl, &cand);
-                    flag = true;
+                    hasCand = true;
                     index ++;
                 }
             } else if (key == Mtext) {
@@ -262,7 +257,7 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
                     int* candIdx = (int*) cand.priv;
                     *candIdx = index;
                     FcitxCandidateWordAppend(cl, &cand);
-                    flag = true;
+                    hasCand = true;
                     index ++;
                 }
                 free(words);
@@ -270,13 +265,18 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
                 FcitxLog(DEBUG, "Invalid MSymbol: %s", msymbol_name(key));
             }
         }
-        toShow = toShow || flag;
+        toShow = toShow || hasCand;
+    }
+    if (toShow) {
+        ret |= IRV_DISPLAY_CANDWORDS;
     }
     
-    if (im->forward)
-        return IRV_DISPLAY_CANDWORDS | IRV_FLAG_FORWARD_KEY;
-    else
-        return IRV_DISPLAY_CANDWORDS;
+    
+
+    if (im->forward) {
+        ret |= IRV_FLAG_FORWARD_KEY;
+    }
+    return ret;
 }
 
 MSymbol FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
@@ -368,22 +368,8 @@ MSymbol FcitxM17NKeySymToSymbol (FcitxKeySym sym, unsigned int state)
     return mkeysym;
 }
 
-INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
+FcitxIRV FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
 {
-    /*
-     This is what Fcitx calls for each event it receives.
-
-     The "return value"-styled interaction is, to some extent, disregarded
-     here since it is tedious to instruct multiple operations during one
-     DoInput call; instead, Fcitx operating functions like
-     FcitxInstanceUpdatePreedit are employed.
-
-     Thus, most of the time DoInput simply returns IRV_DO_NOTHING to suppress
-     further Fcitx-side processing, except when the symbol was let through by
-     m17n (IRV_TO_PROCESS) or the candidate list needs to be shown
-     (IRV_DISPLAY_CANDS).
-     */
-
     // FcitxLog(INFO, "DoInput got sym=%x, state=%x, hahaha", sym, state);
 
     IM* im = (IM*) arg;
@@ -393,26 +379,27 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
     im->forward = false;
     FcitxInstance* inst = im->owner->owner;
     FcitxInputState* is = FcitxInstanceGetInputState(inst);
-    
-    if (FcitxCandidateWordGetListSize(FcitxInputStateGetCandidateList(is)) > 0
-        && (
-            FcitxHotkeyIsHotKeyDigit(sym, state)
+    int candSize = FcitxCandidateWordGetListSize(FcitxInputStateGetCandidateList(is));
+
+    if (candSize > 0) {
+        if (FcitxHotkeyIsHotKeyDigit(sym, state)
             || FcitxHotkeyIsHotKey(sym, state, FCITX_M17N_UP)
             || FcitxHotkeyIsHotKey(sym, state, FCITX_M17N_DOWN)
             || FcitxHotkeyIsHotKey(sym, state, im->owner->config.hkPrevPage)
-            || FcitxHotkeyIsHotKey(sym, state, im->owner->config.hkNextPage)
-        ))
-        return IRV_TO_PROCESS;
-    
-    if (FcitxCandidateWordGetListSize(FcitxInputStateGetCandidateList(is)) > 0
-        && (FcitxHotkeyIsHotKey(sym, state, FCITX_RIGHT)
-            || FcitxHotkeyIsHotKey(sym, state, FCITX_LEFT)))
-        return IRV_DO_NOTHING;
+            || FcitxHotkeyIsHotKey(sym, state, im->owner->config.hkNextPage)) {
+            return IRV_TO_PROCESS;
+        }
+
+        if (FcitxHotkeyIsHotKey(sym, state, FCITX_RIGHT)
+            || FcitxHotkeyIsHotKey(sym, state, FCITX_LEFT)) {
+            return IRV_DO_NOTHING;
+        }
+    }
 
     return FcitxM17NDoInputInternal(im, sym, state);
 }
 
-INPUT_RETURN_VALUE FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned int state)
+FcitxIRV FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned state)
 {
     MSymbol msym = FcitxM17NKeySymToSymbol(sym, state);
     FcitxInstance* inst = im->owner->owner;
@@ -436,9 +423,8 @@ INPUT_RETURN_VALUE FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned in
         }
         m17n_object_unref(produced);
     }
-    
-    if (thru)
-        im->forward = true;
+
+    im->forward = thru;
 
     return IRV_DISPLAY_CANDWORDS;
 }
@@ -462,26 +448,28 @@ boolean FcitxM17NInit(void *arg)
     FcitxInstanceSetContext(inst, CONTEXT_DISABLE_QUICKPHRASE, &flag);
     FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_PREVPAGE_KEY, im->owner->config.hkPrevPage);
     FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_NEXTPAGE_KEY, im->owner->config.hkNextPage);
-    FcitxInstanceSetContext(inst, CONTEXT_IM_LANGUAGE, "us");
-    
+    FcitxInstanceSetContext(inst, CONTEXT_IM_KEYBOARD_LAYOUT, "us");
+
     if (im->owner->mim == NULL || im->owner->mim->language != im->mlang || im->owner->mim->name != im->mname) {
         if (im->owner->mic)
             minput_destroy_ic(im->owner->mic);
-        
+
         if (im->owner->mim)
             minput_close_im(im->owner->mim);
-        
+
         im->owner->mim = minput_open_im(im->mlang, im->mname, NULL);
         im->owner->mic = minput_create_ic(im->owner->mim, NULL);
+        if (!im->pageSize)
+            im->pageSize = getPageSize(im->mlang, im->mname);
     }
-    
+
     return true;
 }
 
 void FcitxM17NReload(void *arg)
 {
     IM* im = (IM*) arg;
-    LoadM17NConfig(&im->owner->config);
+    loadConfig(&im->owner->config);
 }
 
 void FcitxM17NSave(void *arg)
@@ -507,13 +495,11 @@ void delIM(IM* im)
 void *FcitxM17NCreate(FcitxInstance* inst)
 {
     bindtextdomain(TEXTDOMAIN, LOCALEDIR);
-    
 
     Addon* addon = (Addon*) fcitx_utils_malloc0(sizeof(Addon));
     addon->owner = inst;
 
-    if (!LoadM17NConfig(&addon->config))
-    {
+    if (!loadConfig(&addon->config)) {
         free(addon);
         return NULL;
     }
@@ -542,6 +528,15 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             FcitxLog(WARNING, "Insane IM [%s: %s]", lang, name);
             continue;
         }
+
+        MPlist* l = minput_get_variable(mlang, mname, msymbol("candidates-charset"));
+        if (l) {
+            /* XXX Non-utf8 encodings are ditched. */
+            if (((MSymbol) mplistSub(mplist_value(l), 3)) != Mcoding_utf_8) {
+                continue;
+            }
+        }
+
         if (!(addon->ims[i] = makeIM(addon, mlang, mname))) {
             FcitxLog(ERROR, "Failed to create IM [%s: %s]", lang, name);
             continue;
@@ -554,7 +549,6 @@ void *FcitxM17NCreate(FcitxInstance* inst)
 
         info = minput_get_title_icon(mlang, mname);
         // head of info is a MText
-        m17n_object_unref(mplistSub(info, 0));
         MText *iconPath = (MText*) mplistSub(info, 1);
 
         if (iconPath) {
@@ -564,7 +558,6 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             // /usr/share/m17n/icons/... on Linux systems, this is a
             // reasonable assumption.
             iconName = mtextToUTF8(iconPath);
-            m17n_object_unref(iconPath);
             FcitxLog(INFO, "Mim icon is %s", iconName);
         } else {
             iconName = uniqueName;
@@ -610,34 +603,36 @@ void FcitxM17NDestroy(void *arg)
 
 CONFIG_DESC_DEFINE(GetM17NConfigDesc, "fcitx-m17n.desc")
 
-static boolean LoadM17NConfig(FcitxM17NConfig* fs)
+static boolean loadConfig(FcitxM17NConfig* fs)
 {
     FcitxConfigFileDesc *configDesc = GetM17NConfigDesc();
-    if (!configDesc)
+    if (!configDesc) {
         return false;
+    }
 
-    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", "fcitx-m17n.config", "rt", NULL);
+    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", CONF_FNAME, "rt", NULL);
 
-    if (!fp)
-    {
-        if (errno == ENOENT)
-            SaveM17NConfig(fs);
+    if (!fp && errno == ENOENT) {
+        saveConfig(fs);
     }
     FcitxConfigFile *cfile = FcitxConfigParseConfigFileFp(fp, configDesc);
 
     FcitxM17NConfigConfigBind(fs, cfile, configDesc);
     FcitxConfigBindSync(&fs->gconfig);
 
-    if (fp)
+    if (fp) {
         fclose(fp);
+    }
     return true;
 }
 
-static void SaveM17NConfig(FcitxM17NConfig* fs)
+static void saveConfig(FcitxM17NConfig* fs)
 {
     FcitxConfigFileDesc *configDesc = GetM17NConfigDesc();
-    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", "fcitx-m17n.config", "wt", NULL);
+    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", CONF_FNAME, "wt", NULL);
     FcitxConfigSaveConfigFileFp(fp, &fs->gconfig, configDesc);
-    if (fp)
+    if (fp) {
         fclose(fp);
+    }
 }
+
