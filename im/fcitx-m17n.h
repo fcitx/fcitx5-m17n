@@ -42,9 +42,9 @@ typedef struct _FcitxM17NConfig
 struct _Addon;
 typedef struct {
     struct _Addon* owner;
-    MInputMethod* mim;
-    MInputContext* mic;
     boolean forward;
+    MSymbol mname;
+    MSymbol mlang;
 } IM;
 
 typedef struct _Addon {
@@ -52,6 +52,8 @@ typedef struct _Addon {
     FcitxM17NConfig config;
     size_t nim;
     IM** ims;
+    MInputMethod* mim;
+    MInputContext* mic;
 } Addon;
 
 CONFIG_BINDING_DECLARE(FcitxM17NConfig);

@@ -92,7 +92,7 @@ void *mplistSub(MPlist *head, size_t idx) {
 int GetPageSize(IM* im)
 {
     int value = 0;
-    MPlist* plist = minput_get_variable (im->mim->language, im->mim->name, msymbol ("candidates-group-size"));
+    MPlist* plist = minput_get_variable (im->owner->mim->language, im->owner->mim->name, msymbol ("candidates-group-size"));
     void* head = NULL, *state = NULL;
     if (plist) {
         head = mplistSub(plist, 0);
@@ -108,48 +108,53 @@ int GetPageSize(IM* im)
     return value;
 }
 
-inline static void setPreedit(FcitxInputState* is, const char* s, int cursor_pos)
+inline static void setPreedit(FcitxInstance* inst, FcitxInputState* is, const char* s, int cursor_pos)
 {
+    FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
     FcitxMessages* m = FcitxInputStateGetClientPreedit(is);
     FcitxMessagesSetMessageCount(m, 0);
     FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
     FcitxInputStateSetClientCursorPos(is, 
         fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
     
-    m = FcitxInputStateGetPreedit(is);
-    FcitxMessagesSetMessageCount(m, 0);
-    if (strlen(s) != 0) {
-        FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
-        FcitxInputStateSetShowCursor(is, true);
-        FcitxInputStateSetCursorPos(is, 
-            fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
+    if (ic && (ic->contextCaps & CAPACITY_PREEDIT) == 0) {
+        m = FcitxInputStateGetPreedit(is);
+        FcitxMessagesSetMessageCount(m, 0);
+        if (strlen(s) != 0) {
+            FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
+            FcitxInputStateSetShowCursor(is, true);
+            FcitxInputStateSetCursorPos(is, 
+                fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
+        }
     }
 }
 
 INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
     
     IM* im = (IM*) arg;
+    if (!im->owner->mic)
+        return IRV_TO_PROCESS;
     int* idx = (int*) cand->priv;
     
-    int lastIdx = im->mic->candidate_index;
+    int lastIdx = im->owner->mic->candidate_index;
     do {
-        if (*idx == im->mic->candidate_index) {
+        if (*idx == im->owner->mic->candidate_index) {
             break;
         }
-        if (*idx > im->mic->candidate_index)
+        if (*idx > im->owner->mic->candidate_index)
             FcitxM17NDoInputInternal(im, FcitxKey_Right, FcitxKeyState_None);
-        else if (*idx < im->mic->candidate_index)
+        else if (*idx < im->owner->mic->candidate_index)
             FcitxM17NDoInputInternal(im, FcitxKey_Left, FcitxKeyState_None);
         /* though useless, but take care if there is a bug cause freeze */
-        if (lastIdx == im->mic->candidate_index)
+        if (lastIdx == im->owner->mic->candidate_index)
             break;
-        lastIdx = im->mic->candidate_index;
-    } while(im->mic->candidate_list && im->mic->candidate_show);
+        lastIdx = im->owner->mic->candidate_index;
+    } while(im->owner->mic->candidate_list && im->owner->mic->candidate_show);
     
-    if (!im->mic->candidate_list || !im->mic->candidate_show || *idx != im->mic->candidate_index)
+    if (!im->owner->mic->candidate_list || !im->owner->mic->candidate_show || *idx != im->owner->mic->candidate_index)
         return IRV_TO_PROCESS;
     
-    MPlist *head = im->mic->candidate_list;
+    MPlist *head = im->owner->mic->candidate_list;
     
     int i = 0;
     while (1) {
@@ -181,23 +186,25 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *cand) {
 INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
 {
     IM* im = (IM*) arg;
+    if (!im->owner->mic)
+        return IRV_TO_PROCESS;
     FcitxInstance* inst = im->owner->owner;
     FcitxInputState* is = FcitxInstanceGetInputState(inst);
     
     boolean toShow = false;
     
-    if (im->mic->preedit) {
-        char* preedit = mtextToUTF8(im->mic->preedit);
+    if (im->owner->mic->preedit) {
+        char* preedit = mtextToUTF8(im->owner->mic->preedit);
         toShow = toShow || (strlen(preedit) != 0);
         if (toShow) {
             FcitxLog(DEBUG, "preedit is %s", preedit);
-            setPreedit(is, preedit, im->mic->cursor_pos);
+            setPreedit(inst, is, preedit, im->owner->mic->cursor_pos);
         }
         free(preedit);
     }
 
-    if (im->mic->status) {
-        char* mstatus = mtextToUTF8(im->mic->status);
+    if (im->owner->mic->status) {
+        char* mstatus = mtextToUTF8(im->owner->mic->status);
         toShow = toShow || (strlen(mstatus) != 0);
         if (strlen(mstatus) != 0) {
             FcitxLog(DEBUG, "IM status changed to %s", mstatus);
@@ -224,8 +231,8 @@ INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg)
     cand.strExtra = NULL;
     cand.wordType = MSG_OTHER;
     
-    if (im->mic->candidate_list && im->mic->candidate_show) {
-        MPlist *head = im->mic->candidate_list;
+    if (im->owner->mic->candidate_list && im->owner->mic->candidate_show) {
+        MPlist *head = im->owner->mic->candidate_list;
         boolean flag = false;
         int index = 0;
         for (; head && mplist_key(head) != Mnil; head = mplist_next(head)) {
@@ -380,6 +387,9 @@ INPUT_RETURN_VALUE FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
     // FcitxLog(INFO, "DoInput got sym=%x, state=%x, hahaha", sym, state);
 
     IM* im = (IM*) arg;
+    if (!im->owner->mic)
+        return IRV_TO_PROCESS;
+
     im->forward = false;
     FcitxInstance* inst = im->owner->owner;
     FcitxInputState* is = FcitxInstanceGetInputState(inst);
@@ -413,11 +423,11 @@ INPUT_RETURN_VALUE FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned in
         return IRV_TO_PROCESS;
     }
     int thru = 0;
-    if (!minput_filter(im->mic, msym, NULL)) {
+    if (!minput_filter(im->owner->mic, msym, NULL)) {
         MText* produced = mtext();
         // If input symbol was let through by m17n, let Fcitx handle it.
         // m17n may still produce some text to commit, though.
-        thru = minput_lookup(im->mic, msym, NULL, produced);
+        thru = minput_lookup(im->owner->mic, msym, NULL, produced);
         if (mtext_len(produced) > 0) {
             char* buf = mtextToUTF8(produced);
             FcitxInstanceCommitString(inst, ic, buf);
@@ -437,7 +447,9 @@ void FcitxM17NReset(void *arg)
 {
     // FcitxLog(INFO, "Reset called, hahaha");
     IM* im = (IM*) arg;
-    minput_reset_ic(im->mic);
+    if (!im->owner->mic)
+        return;
+    minput_reset_ic(im->owner->mic);
 }
 
 boolean FcitxM17NInit(void *arg)
@@ -450,6 +462,19 @@ boolean FcitxM17NInit(void *arg)
     FcitxInstanceSetContext(inst, CONTEXT_DISABLE_QUICKPHRASE, &flag);
     FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_PREVPAGE_KEY, im->owner->config.hkPrevPage);
     FcitxInstanceSetContext(inst, CONTEXT_ALTERNATIVE_NEXTPAGE_KEY, im->owner->config.hkNextPage);
+    FcitxInstanceSetContext(inst, CONTEXT_IM_LANGUAGE, "us");
+    
+    if (im->owner->mim == NULL || im->owner->mim->language != im->mlang || im->owner->mim->name != im->mname) {
+        if (im->owner->mic)
+            minput_destroy_ic(im->owner->mic);
+        
+        if (im->owner->mim)
+            minput_close_im(im->owner->mim);
+        
+        im->owner->mim = minput_open_im(im->mlang, im->mname, NULL);
+        im->owner->mic = minput_create_ic(im->owner->mim, NULL);
+    }
+    
     return true;
 }
 
@@ -466,25 +491,16 @@ void FcitxM17NSave(void *arg)
 
 IM* makeIM(Addon* owner, MSymbol mlang, MSymbol mname)
 {
-    MInputMethod *mim = minput_open_im(mlang, mname, NULL);
-    if (!mim) return NULL;
-    MInputContext *mic = minput_create_ic(mim, NULL);
-    if (!mic) {
-        minput_close_im(mim);
-        return NULL;
-    }
     IM *im = (IM*) fcitx_utils_malloc0(sizeof(IM));
     im->owner = owner;
-    im->mim = mim;
-    im->mic = mic;
+    im->mlang = mlang;
+    im->mname = mname;
     // FcitxLog(INFO, "IM %s(%s) created, hahaha", name, lang);
     return im;
 }
 
 void delIM(IM* im)
 {
-    minput_destroy_ic(im->mic);
-    minput_close_im(im->mim);
     free(im);
 }
 
@@ -581,6 +597,13 @@ void FcitxM17NDestroy(void *arg)
             delIM(addon->ims[i]);
         }
     }
+    
+    if (addon->mic)
+        minput_destroy_ic(addon->mic);
+
+    if (addon->mim)
+        minput_close_im(addon->mim);
+    
     free(addon);
     M17N_FINI();
 }
