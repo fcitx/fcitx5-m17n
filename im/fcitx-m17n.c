@@ -610,7 +610,7 @@ static boolean loadConfig(FcitxM17NConfig* fs)
         return false;
     }
 
-    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", CONF_FNAME, "rt", NULL);
+    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", CONF_FNAME, "r", NULL);
 
     if (!fp && errno == ENOENT) {
         saveConfig(fs);
@@ -629,7 +629,7 @@ static boolean loadConfig(FcitxM17NConfig* fs)
 static void saveConfig(FcitxM17NConfig* fs)
 {
     FcitxConfigFileDesc *configDesc = GetM17NConfigDesc();
-    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", CONF_FNAME, "wt", NULL);
+    FILE *fp = FcitxXDGGetFileUserWithPrefix("conf", CONF_FNAME, "w", NULL);
     FcitxConfigSaveConfigFileFp(fp, &fs->gconfig, configDesc);
     if (fp) {
         fclose(fp);
