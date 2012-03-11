@@ -125,12 +125,13 @@ int GetPageSize(MSymbol mlang, MSymbol mname)
 inline static void SetPreedit(FcitxInstance* inst, FcitxInputState* is, const char* s, int cursor_pos)
 {
     FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
+    FcitxProfile* profile = FcitxInstanceGetProfile(inst);
     FcitxMessages* m = FcitxInputStateGetClientPreedit(is);
     FcitxMessagesSetMessageCount(m, 0);
     FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
     FcitxInputStateSetClientCursorPos(is, 
         fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
-    if (ic && (ic->contextCaps & CAPACITY_PREEDIT) == 0) {
+    if (ic && ((ic->contextCaps & CAPACITY_PREEDIT) == 0 || !profile->bUsePreedit)) {
         m = FcitxInputStateGetPreedit(is);
         FcitxMessagesSetMessageCount(m, 0);
         if (strlen(s) != 0) {

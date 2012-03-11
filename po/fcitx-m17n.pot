@@ -8,15 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-24 20:09+0800\n"
+"POT-Creation-Date: 2012-03-11 20:38+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# unknown
 #: /home/saber/Develop/fcitx-m17n/build/po/tmp/fcitx-m17n.conf.in.h:1
 msgid "M17N"
 msgstr ""
@@ -25,7 +26,15 @@ msgstr ""
 msgid "M17N IM Support For Fcitx"
 msgstr ""
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/fcitx-m17n.c:302
+#: /home/saber/Develop/fcitx-m17n/im/fcitx-m17n.desc:2
+msgid "Prev Page"
+msgstr ""
+
+#: /home/saber/Develop/fcitx-m17n/im/fcitx-m17n.desc:7
+msgid "Next Page"
+msgstr ""
+
+#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/fcitx-m17n.c:562
 #, c-format
 msgid "%s - %s (M17N)"
 msgstr ""

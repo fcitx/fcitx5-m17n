@@ -1,9 +1,12 @@
 [M17N/PrevPage]
-Description=Zhuyin Prev Page
+Description=Prev Page
 Type=Hotkey
 DefaultValue=UP CTRL_P
 
 [M17N/NextPage]
-Description=Zhuyin Next Page
+Description=Next Page
 Type=Hotkey
 DefaultValue=DOWN CTRL_N
+
+[DescriptionFile]
+LocaleDomain=fcitx-m17n

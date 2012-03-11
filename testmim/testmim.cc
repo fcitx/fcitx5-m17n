@@ -38,7 +38,7 @@ int mtext_print(FILE *of, MText *text)
     mconv_encode(conv, text);
     buf[conv.id->nbytes] = '\0';
 
-    int re = fprintf(of, "%s(%u/%u)", buf, strlen((char*)buf), bufsize);
+    int re = fprintf(of, "%s(%lu/%lu)", buf, (unsigned long) strlen((char*)buf), (unsigned long) bufsize);
     delete [] buf;
     return re;
 }
