@@ -38,7 +38,7 @@ You may want to read ``CMakeLists.txt`` in the subdirectories.
 License
 =======
 
-All codes are currently licensed in LGPL 2.1.
+All codes are currently licensed in LGPL 2.1+.
 
 See ``COPYING`` for a copy of the license. A list of of fcitx-m17n authors and
 contributors is included herein:
