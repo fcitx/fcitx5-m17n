@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2012 Cheer Xiao
  * Copyright (C) 2012-2012 CSSlayer
  *
@@ -68,11 +68,14 @@ static void               FcitxM17NDelIM(IM* im);
 static boolean            FcitxM17NConfigLoad(FcitxM17NConfig* fs);
 static void               FcitxM17NConfigSave(FcitxM17NConfig* fs);
 
+static void               FcitxM17NCallback (MInputContext *context, MSymbol command);
+
 static char*              MTextToUTF8(MText* mt);
 static void*              MPListIndex(MPlist *head, size_t idx);
 
 inline static void        SetPreedit(FcitxInstance* inst, FcitxInputState* is, const char* s, int cursor_pos);
 static int                GetPageSize(MSymbol mlang, MSymbol mname);
+
 
 FCITX_EXPORT_API
 FcitxIMClass ime = {
@@ -129,7 +132,7 @@ inline static void SetPreedit(FcitxInstance* inst, FcitxInputState* is, const ch
     FcitxMessages* m = FcitxInputStateGetClientPreedit(is);
     FcitxMessagesSetMessageCount(m, 0);
     FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
-    FcitxInputStateSetClientCursorPos(is, 
+    FcitxInputStateSetClientCursorPos(is,
         fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
     if (ic && ((ic->contextCaps & CAPACITY_PREEDIT) == 0 || !profile->bUsePreedit)) {
         m = FcitxInputStateGetPreedit(is);
@@ -137,7 +140,7 @@ inline static void SetPreedit(FcitxInstance* inst, FcitxInputState* is, const ch
         if (strlen(s) != 0) {
             FcitxMessagesAddMessageAtLast(m, MSG_INPUT, "%s", s);
             FcitxInputStateSetShowCursor(is, true);
-            FcitxInputStateSetCursorPos(is, 
+            FcitxInputStateSetCursorPos(is,
                 fcitx_utf8_get_nth_char((char*)s, cursor_pos) - s);
         }
     }
@@ -284,8 +287,8 @@ FcitxIRV FcitxM17NGetCandWords(void *arg)
     if (toShow) {
         ret |= IRV_DISPLAY_CANDWORDS;
     }
-    
-    
+
+
 
     if (im->forward) {
         ret |= IRV_FLAG_FORWARD_KEY;
@@ -472,7 +475,9 @@ boolean FcitxM17NInit(void *arg)
             minput_close_im(im->owner->mim);
 
         im->owner->mim = minput_open_im(im->mlang, im->mname, NULL);
-        im->owner->mic = minput_create_ic(im->owner->mim, NULL);
+        mplist_put (im->owner->mim->driver.callback_list, Minput_get_surrounding_text, FcitxM17NCallback);
+        mplist_put (im->owner->mim->driver.callback_list, Minput_delete_surrounding_text, FcitxM17NCallback);
+        im->owner->mic = minput_create_ic(im->owner->mim, im);
         if (!im->pageSize)
             im->pageSize = GetPageSize(im->mlang, im->mname);
     }
@@ -604,13 +609,13 @@ void FcitxM17NDestroy(void *arg)
             FcitxM17NDelIM(addon->ims[i]);
         }
     }
-    
+
     if (addon->mic)
         minput_destroy_ic(addon->mic);
 
     if (addon->mim)
         minput_close_im(addon->mim);
-    
+
     free(addon);
     M17N_FINI();
 }
@@ -651,3 +656,58 @@ static void FcitxM17NConfigSave(FcitxM17NConfig* fs)
     }
 }
 
+
+static void
+FcitxM17NCallback (MInputContext *context,
+                   MSymbol command)
+{
+    IM* im = (IM*) context->arg;
+
+    if (!im)
+        return;
+
+    FcitxInputContext* ic = FcitxInstanceGetCurrentIC(im->owner->owner);
+
+    if (command == Minput_get_surrounding_text && ic && (ic->contextCaps & CAPACITY_SURROUNDING_TEXT)) {
+        char* text = NULL;
+        unsigned int cursor_pos;
+
+        if (!FcitxInstanceGetSurroundingText (im->owner->owner, ic, &text, &cursor_pos, NULL))
+            return;
+        if (!text)
+            return;
+        size_t nchars = fcitx_utf8_strlen(text);
+        size_t nbytes = strlen(text);
+        MText* mt = mconv_decode_buffer (Mcoding_utf_8, (const unsigned char*) text, nbytes), *surround;
+        free(text);
+
+        long len = (long) mplist_value (context->plist), pos;
+        if (len < 0) {
+            pos = cursor_pos + len;
+            if (pos < 0)
+                pos = 0;
+            surround = mtext_duplicate (mt, pos, cursor_pos);
+        }
+        else if (len > 0) {
+            pos = cursor_pos + len;
+            if (pos > nchars)
+                pos = nchars;
+            surround = mtext_duplicate (mt, cursor_pos, pos);
+        }
+        else {
+            surround = mtext ();
+        }
+        m17n_object_unref (mt);
+        mplist_set (context->plist, Mtext, surround);
+        m17n_object_unref (surround);
+    }
+    else if (command == Minput_delete_surrounding_text && ic && (ic->contextCaps & CAPACITY_SURROUNDING_TEXT)) {
+        int len;
+
+        len = (long) mplist_value (context->plist);
+        if (len < 0)
+            FcitxInstanceDeleteSurroundingText (im->owner->owner, ic, len, -len);
+        else if (len > 0)
+            FcitxInstanceDeleteSurroundingText (im->owner->owner, ic, 0, -len);
+    }
+}
