@@ -678,8 +678,10 @@ FcitxM17NCallback (MInputContext *context,
             return;
         size_t nchars = fcitx_utf8_strlen(text);
         size_t nbytes = strlen(text);
-        MText* mt = mconv_decode_buffer (Mcoding_utf_8, (const unsigned char*) text, nbytes), *surround;
+        MText* mt = mconv_decode_buffer (Mcoding_utf_8, (const unsigned char*) text, nbytes), *surround = NULL;
         free(text);
+        if (!mt)
+            return;
 
         long len = (long) mplist_value (context->plist), pos;
         if (len < 0) {
@@ -698,8 +700,10 @@ FcitxM17NCallback (MInputContext *context,
             surround = mtext ();
         }
         m17n_object_unref (mt);
-        mplist_set (context->plist, Mtext, surround);
-        m17n_object_unref (surround);
+        if (surround) {
+            mplist_set (context->plist, Mtext, surround);
+            m17n_object_unref (surround);
+        }
     }
     else if (command == Minput_delete_surrounding_text && ic && (ic->contextCaps & CAPACITY_SURROUNDING_TEXT)) {
         int len;
