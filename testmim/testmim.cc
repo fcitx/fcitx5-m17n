@@ -4,6 +4,7 @@
 #include "minput_list.h"
 #endif
 
+#include <stdint.h>
 #include <string>
 #include <sstream>
 #include <string.h>
