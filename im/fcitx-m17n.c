@@ -49,7 +49,6 @@
 static const FcitxHotkey FCITX_M17N_UP[2] = {{NULL, FcitxKey_Up, 0}, {NULL, FcitxKey_P, FcitxKeyState_Ctrl}};
 static const FcitxHotkey FCITX_M17N_DOWN[2] = {{NULL, FcitxKey_Down, 0}, {NULL, FcitxKey_N, FcitxKeyState_Ctrl}};
 
-extern const char*        KeySymName (FcitxKeySym keyval);
 static MSymbol            KeySymToSymbol (FcitxKeySym sym, unsigned int state);
 
 static void*              FcitxM17NCreate(FcitxInstance *instance);
@@ -267,7 +266,7 @@ FcitxIRV FcitxM17NGetCandWords(void *arg)
                 char *words = MTextToUTF8((MText*) mplist_value(head));
                 char *p, *q;
                 for (p = words; *p; p = q) {
-                    int unused;
+                    uint32_t unused;
                     q = fcitx_utf8_get_char(p, &unused);
                     cand.strWord = strndup(p, q-p);
                     cand.priv = fcitx_utils_malloc0(sizeof(int));
@@ -356,7 +355,7 @@ MSymbol KeySymToSymbol (FcitxKeySym sym, unsigned int state)
     if (mask & FcitxKeyState_Hyper) {
         prefix = "H-";
     }
-    if (mask & FcitxKeyState_Super2) {
+    if (mask & FcitxKeyState_Super) {
         prefix = "s-";
     }
     // This is mysterious. - xiaq
