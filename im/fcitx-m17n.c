@@ -324,6 +324,7 @@ MSymbol KeySymToSymbol (FcitxKeySym sym, unsigned int state)
     }
 
     const char* base = "";
+    char temp[2] = " ";
 
     if (sym >= FcitxKey_space && sym <= FcitxKey_asciitilde) {
         FcitxKeySym c = sym;
@@ -337,7 +338,6 @@ MSymbol KeySymToSymbol (FcitxKeySym sym, unsigned int state)
             mask |= FcitxKeyState_Ctrl;
         }
 
-        char temp[2] = " ";
         temp[0] = c & 0xff;
         base = temp;
     }
