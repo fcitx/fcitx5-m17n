@@ -547,6 +547,8 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         if (list)
             item = MatchDefaultSettings(list, lang, name);
 
+        FcitxLog(INFO, "Created IM [%s: %s %d]", lang, name, addon->config.enableDeprecated);
+
         if (item && item->priority < 0 && !addon->config.enableDeprecated)
             continue;
 
@@ -567,7 +569,7 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         if (!(addon->ims[i] = FcitxM17NMakeIM(addon, mlang, mname))) {
             continue;
         }
-        FcitxLog(DEBUG, "Created IM [%s: %s]", lang, name);
+        FcitxLog(INFO, "Created IM [%s: %s]", lang, name);
 
         char *uniqueName, *fxName, *iconName;
         asprintf(&uniqueName, "m17n_%s_%s", lang, name);

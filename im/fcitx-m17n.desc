@@ -9,10 +9,10 @@ Type=Hotkey
 DefaultValue=DOWN CTRL_N
 
 [M17N/EnableDeprecated]
-Description=Enable deprecated
+Description=Enable deprecated Input method
 Type=Boolean
 DefaultValue=False
-LongDescription=Enable deprecated input method provided M17N (Need restart)
+LongDescription=Enable deprecated input method provided M17N, usually this means something better is already out (Need restart)
 
 [DescriptionFile]
 LocaleDomain=fcitx-m17n

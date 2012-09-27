@@ -23,5 +23,5 @@
 CONFIG_BINDING_BEGIN(FcitxM17NConfig)
 CONFIG_BINDING_REGISTER("M17N", "PrevPage", hkPrevPage)
 CONFIG_BINDING_REGISTER("M17N", "NextPage", hkNextPage)
-CONFIG_BINDING_REGISTER("M17N", "EnableDepreacted", enableDeprecated)
+CONFIG_BINDING_REGISTER("M17N", "EnableDeprecated", enableDeprecated)
 CONFIG_BINDING_END()
