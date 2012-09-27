@@ -8,5 +8,11 @@ Description=Next Page
 Type=Hotkey
 DefaultValue=DOWN CTRL_N
 
+[M17N/EnableDeprecated]
+Description=Enable deprecated
+Type=Boolean
+DefaultValue=False
+LongDescription=Enable deprecated input method provided M17N (Need restart)
+
 [DescriptionFile]
 LocaleDomain=fcitx-m17n

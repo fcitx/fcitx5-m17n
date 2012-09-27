@@ -41,6 +41,7 @@
 
 #include "fcitx-m17n.h"
 #include "keysymname.h"
+#include "overrideparser.h"
 
 #define CONF_FNAME "fcitx-m17n.config"
 #define TEXTDOMAIN "fcitx-m17n"
@@ -75,15 +76,10 @@ static void*              MPListIndex(MPlist *head, size_t idx);
 inline static void        SetPreedit(FcitxInstance* inst, FcitxInputState* is, const char* s, int cursor_pos);
 static int                GetPageSize(MSymbol mlang, MSymbol mname);
 
-
-FCITX_EXPORT_API
-FcitxIMClass ime = {
+FCITX_DEFINE_PLUGIN(fcitx_m17n, ime, FcitxIMClass) = {
     FcitxM17NCreate,
     FcitxM17NDestroy
 };
-
-FCITX_EXPORT_API
-int ABI_VERSION = FCITX_ABI_VERSION;
 
 char* MTextToUTF8(MText* mt)
 {
@@ -223,7 +219,7 @@ FcitxIRV FcitxM17NGetCandWords(void *arg)
 
     if (im->owner->mic->status) {
         char* mstatus = MTextToUTF8(im->owner->mic->status);
-        toShow = toShow || (strlen(mstatus) != 0);
+        // toShow = toShow || (strlen(mstatus) != 0);
         if (strlen(mstatus) != 0) {
             FcitxLog(DEBUG, "IM status changed to %s", mstatus);
             // FcitxMessages* auxDown = FcitxInputStateGetAuxUpDown(is);
@@ -283,14 +279,10 @@ FcitxIRV FcitxM17NGetCandWords(void *arg)
         }
         toShow = toShow || hasCand;
     }
-    if (toShow) {
-        ret |= IRV_DISPLAY_CANDWORDS;
-    }
-
-
+    FcitxUIUpdateInputWindow(inst);
 
     if (im->forward) {
-        ret |= IRV_FLAG_FORWARD_KEY;
+        ret = IRV_TO_PROCESS;
     }
     return ret;
 }
@@ -417,9 +409,11 @@ FcitxIRV FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
 
 FcitxIRV FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned state)
 {
-    MSymbol msym = KeySymToSymbol(sym, state);
     FcitxInstance* inst = im->owner->owner;
+    FcitxInputState* is = FcitxInstanceGetInputState(inst);
     FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
+
+    MSymbol msym = KeySymToSymbol(FcitxInputStateGetKeySym(is), FcitxInputStateGetKeyState(is));
 
     if (msym == Mnil) {
         FcitxLog(DEBUG, "sym=%x, state=%x, not my dish", sym, state);
@@ -529,6 +523,14 @@ void *FcitxM17NCreate(FcitxInstance* inst)
     // but it also makes the the code a little simpler.
     addon->ims = (IM**) fcitx_utils_malloc0(sizeof(IM*) * addon->nim);
 
+    OverrideItemList* list = NULL;
+    FILE* fp = FcitxXDGGetFileWithPrefix("m17n", "default", "r", NULL);
+    if (fp) {
+        list = ParseDefaultSettings(fp);
+        fclose(fp);
+    }
+
+    char* curlang = fcitx_utils_get_current_langcode();
     int i;
     for (i = 0; i < addon->nim; i++, mimlist = mplist_next(mimlist)) {
         // See m17n documentation of minput_list() in input.c.
@@ -541,9 +543,16 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         char *lang = msymbol_name(mlang);
         char *name = msymbol_name(mname);
 
+        OverrideItem* item = NULL;
+        if (list)
+            item = MatchDefaultSettings(list, lang, name);
+
+        if (item && item->priority < 0 && !addon->config.enableDeprecated)
+            continue;
+
         if (msane != Mt) {
             // Not "sane"
-            FcitxLog(WARNING, "Insane IM [%s: %s]", lang, name);
+            // FcitxLog(WARNING, "Insane IM [%s: %s]", lang, name);
             continue;
         }
 
@@ -556,14 +565,13 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         }
 
         if (!(addon->ims[i] = FcitxM17NMakeIM(addon, mlang, mname))) {
-            FcitxLog(ERROR, "Failed to create IM [%s: %s]", lang, name);
             continue;
         }
-        FcitxLog(INFO, "Created IM [%s: %s]", lang, name);
+        FcitxLog(DEBUG, "Created IM [%s: %s]", lang, name);
 
         char *uniqueName, *fxName, *iconName;
         asprintf(&uniqueName, "m17n_%s_%s", lang, name);
-        asprintf(&fxName, _("%s - %s (M17N)"), lang, name);
+        asprintf(&fxName, _("%s (M17N)"), (item && item->i18nName) ? _(item->i18nName) : name);
 
         info = minput_get_title_icon(mlang, mname);
         // head of info is a MText
@@ -576,18 +584,29 @@ void *FcitxM17NCreate(FcitxInstance* inst)
             // /usr/share/m17n/icons/... on Linux systems, this is a
             // reasonable assumption.
             iconName = MTextToUTF8(iconPath);
-            FcitxLog(INFO, "Mim icon is %s", iconName);
+            FcitxLog(DEBUG, "Mim icon is %s", iconName);
         } else {
             iconName = uniqueName;
         }
 
-        FcitxInstanceRegisterIM(
+        FcitxIMIFace iface;
+        memset(&iface, 0, sizeof(FcitxIMIFace));
+        iface.Init = FcitxM17NInit;
+        iface.DoInput = FcitxM17NDoInput;
+        iface.ResetIM = FcitxM17NReset;
+        iface.Save = FcitxM17NSave;
+        iface.ReloadConfig = FcitxM17NReload;
+        iface.GetCandWords = FcitxM17NGetCandWords;
+
+        int priority = 100;
+        if (item && strncmp(curlang, lang, 2) == 0 && item->priority > 0)
+            priority = item->priority;
+
+        FcitxInstanceRegisterIMv2(
             inst, addon->ims[i],
             uniqueName, fxName, iconName,
-            FcitxM17NInit, FcitxM17NReset, FcitxM17NDoInput,
-            FcitxM17NGetCandWords, NULL, FcitxM17NSave,
-            FcitxM17NReload, NULL,
-            100, strcmp(lang, "t") == 0 ? "*" : lang
+            iface,
+            priority, strcmp(lang, "t") == 0 ? "*" : lang
         );
         if (iconName != uniqueName) {
             free(iconName);
@@ -595,6 +614,11 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         free(uniqueName);
         free(fxName);
     }
+
+    fcitx_utils_free(curlang);
+
+    if (list)
+        utarray_free(list);
 
     return addon;
 }

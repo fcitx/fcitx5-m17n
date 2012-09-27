@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2012 Cheer Xiao
  * Copyright (C) 2012-2012 CSSlayer
  *
@@ -34,6 +34,7 @@ typedef struct _FcitxM17NConfig
     FcitxGenericConfig gconfig;
     FcitxHotkey hkPrevPage[2];
     FcitxHotkey hkNextPage[2];
+    boolean enableDeprecated;
 } FcitxM17NConfig;
 
 struct _Addon;

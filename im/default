@@ -1,0 +1,47 @@
+# Default
+as:*:2
+bn:*:2
+gu:*:2
+hi:*:2
+kn:*:2
+ks:*:2
+mai:*2
+ml:*:2
+mr:*:2
+ne:*:2
+or:*:2
+pa:*:2
+sa:*:2
+sd:*:2
+si:*:2
+ta:*:2
+te:*:2
+# Default with higher level
+as:phonetic:1
+bn:inscript:1
+gu:inscript:1
+hi:inscript:1
+kn:kgp:1
+ks:kbd:1
+mai:inscript:1
+ml:inscript:1
+mr:inscript:1
+ne:rom:1
+or:inscript:1
+pa:inscript:1
+sa:harvard-kyoto:1
+sd:inscript:1
+si:wijesekera:1
+ta:tamil99:1
+te:inscript:1
+zh:bopomofo:100:Chewing Symbol
+zh:py:100:Pinyin Symbol
+# Disabled with -1
+zh:cangjie:-1:Cangjie
+zh:pinyin:-1:Pinyin
+zh:tonepy:-1:Tone Pinyin
+*:kbd:-1:Keyboard
+ja:anthy:-1:Anthy
+ko:han2:-1:Hanja
+ko:romaja:-1:Romaja
+zh:quick:-1:Quick

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2012 Cheer Xiao
  * Copyright (C) 2012-2012 CSSlayer
  *
@@ -23,4 +23,5 @@
 CONFIG_BINDING_BEGIN(FcitxM17NConfig)
 CONFIG_BINDING_REGISTER("M17N", "PrevPage", hkPrevPage)
 CONFIG_BINDING_REGISTER("M17N", "NextPage", hkNextPage)
+CONFIG_BINDING_REGISTER("M17N", "EnableDepreacted", enableDeprecated)
 CONFIG_BINDING_END()

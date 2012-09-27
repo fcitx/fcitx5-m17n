@@ -8,6 +8,7 @@ set( fcitx_m17n_sources
     fcitx-m17n.c
     keysymname.c
     config.c
+    overrideparser.c
     )
 
 if (NEED_MINPUT_LIST)
@@ -20,3 +21,5 @@ fcitx_add_addon(fcitx-m17n ${fcitx_m17n_sources} )
 fcitx_add_addon_conf_file(fcitx-m17n.conf)
 fcitx_add_configdesc_file(fcitx-m17n.desc)
 target_link_libraries (fcitx-m17n ${M17N_LIBRARIES})
+
+install(FILES default DESTINATION ${FCITX4_PREFIX}/share/fcitx/m17n)
