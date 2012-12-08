@@ -6,7 +6,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 FIND_PACKAGE(M17N REQUIRED)
 FIND_PACKAGE(Gettext REQUIRED)
-FIND_PACKAGE(Fcitx 4.2.6 REQUIRED)
+FIND_PACKAGE(Fcitx 4.2.7 REQUIRED)
 
 option(ENABLE_TEST "standalone test program" Off)
 
@@ -32,8 +32,8 @@ endif (M17N_VERSION VERSION_LESS "1.6.3")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-add_subdirectory(im)
 add_subdirectory(po)
+add_subdirectory(im)
 if (ENABLE_TEST)
     add_subdirectory(testmim)
 endif (ENABLE_TEST)

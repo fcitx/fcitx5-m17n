@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 12:48-0400\n"
+"Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
+"POT-Creation-Date: 2012-12-07 22:38-0500\n"
 "PO-Revision-Date: 2012-09-27 12:49-0400\n"
 "Last-Translator: Weng Xuetian <wengxt@gmail.com>\n"
 "Language-Team: Chinese Simplified <fcitx-dev@googlegroups.com>\n"
@@ -18,70 +18,71 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Lokalize 1.5\n"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/fcitx-m17n.c:576
+#: im/fcitx-m17n.c:574
 #, c-format
 msgid "%s (M17N)"
 msgstr "%s (M17N)"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:12
+#: im/i18nname.c:12
 msgid "Anthy"
 msgstr "Anthy"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:8
+#: im/i18nname.c:8
 msgid "Cangjie"
 msgstr "仓颉"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:7
+#: im/i18nname.c:7
 msgid "Chewing Symbol"
 msgstr "注音符号"
 
-#: /home/saber/Develop/fcitx-m17n/im/fcitx-m17n.desc:12
+#: im/fcitx-m17n.desc:12
 msgid "Enable deprecated Input method"
 msgstr "启用已废弃的输入法"
 
-#: /home/saber/Develop/fcitx-m17n/im/fcitx-m17n.desc:15
+#: im/fcitx-m17n.desc:15
 msgid ""
 "Enable deprecated input method provided M17N, usually this means something "
 "better is already out (Need restart)"
-msgstr "启用 M17N 提供的已废弃的输入法，通常这意味着更好的输入法已经被支持 (需要重启)"
+msgstr ""
+"启用 M17N 提供的已废弃的输入法，通常这意味着更好的输入法已经被支持 (需要重启)"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:13
+#: im/i18nname.c:13
 msgid "Hanja"
 msgstr "汉字"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:11
+#: im/i18nname.c:11
 msgid "Keyboard"
 msgstr "键盘"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/tmp/fcitx-m17n.conf.in.h:1
+#: im/fcitx-m17n.conf.in:3 im/fcitx-m17n.desc:1 im/fcitx-m17n.desc:6
+#: im/fcitx-m17n.desc:11
 msgid "M17N"
 msgstr "M17N"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/tmp/fcitx-m17n.conf.in.h:2
+#: im/fcitx-m17n.conf.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr "Fcitx 的 M17N 输入法支持"
 
-#: /home/saber/Develop/fcitx-m17n/im/fcitx-m17n.desc:7
+#: im/fcitx-m17n.desc:7
 msgid "Next Page"
 msgstr "下一页"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:9
+#: im/i18nname.c:9
 msgid "Pinyin"
 msgstr "拼音"
 
-#: /home/saber/Develop/fcitx-m17n/im/fcitx-m17n.desc:2
+#: im/fcitx-m17n.desc:2
 msgid "Prev Page"
 msgstr "上一页"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:15
+#: im/i18nname.c:15
 msgid "Quick"
 msgstr "速成"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:14
+#: im/i18nname.c:14
 msgid "Romaja"
 msgstr "罗马字"
 
-#: /home/saber/Develop/fcitx-m17n/build/po/../..//im/i18nname.c:10
+#: im/i18nname.c:10
 msgid "Tone Pinyin"
 msgstr "音调拼音"
-

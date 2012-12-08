@@ -1,6 +1,0 @@
-# List of source files which contain translatable strings.
-./po/conf.po
-./po/desc.po
-@REL_SOURCE_ROOT@/im/fcitx-m17n.c
-@REL_SOURCE_ROOT@/im/i18nname.c
-@REL_SOURCE_ROOT@/im/fcitx-m17n.conf.in
