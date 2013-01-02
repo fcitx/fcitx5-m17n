@@ -1,12 +1,11 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 2.6)
 
 project(fcitx-m17n)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-FIND_PACKAGE(M17N REQUIRED)
-FIND_PACKAGE(Gettext REQUIRED)
-FIND_PACKAGE(Fcitx 4.2.7 REQUIRED)
+find_package(M17N REQUIRED)
+find_package(Fcitx 4.2.7 REQUIRED)
 
 option(ENABLE_TEST "standalone test program" Off)
 
