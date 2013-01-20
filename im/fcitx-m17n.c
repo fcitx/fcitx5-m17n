@@ -413,7 +413,7 @@ FcitxIRV FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned state)
     FcitxInputState* is = FcitxInstanceGetInputState(inst);
     FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
 
-    MSymbol msym = KeySymToSymbol(FcitxInputStateGetKeySym(is), FcitxInputStateGetKeyState(is));
+    MSymbol msym = KeySymToSymbol(sym, state);
 
     if (msym == Mnil) {
         FcitxLog(DEBUG, "sym=%x, state=%x, not my dish", sym, state);
