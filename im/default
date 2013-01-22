@@ -35,10 +35,10 @@ si:wijesekera:1
 ta:tamil99:1
 te:inscript:1
 zh:bopomofo:100:Chewing Symbol
-zh:py:100:Pinyin Symbol
+zh:pinyin:100:Pinyin Symbol
 # Disabled with -1
 zh:cangjie:-1:Cangjie
-zh:pinyin:-1:Pinyin
+zh:py:-1:Pinyin
 zh:tonepy:-1:Tone Pinyin
 *:kbd:-1:Keyboard
 ja:anthy:-1:Anthy

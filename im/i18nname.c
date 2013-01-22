@@ -4,6 +4,7 @@
 /* remember to update "default" in the same directory. */
 
 const char* dump = {
+    N_("Pinyin Symbol"),
     N_("Chewing Symbol"),
     N_("Cangjie"),
     N_("Pinyin"),

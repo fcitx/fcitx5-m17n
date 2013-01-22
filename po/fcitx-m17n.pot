@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-12-07 22:38-0500\n"
+"POT-Creation-Date: 2013-01-22 05:00-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,38 +23,42 @@ msgid "%s (M17N)"
 msgstr ""
 
 #: im/i18nname.c:7
-msgid "Chewing Symbol"
+msgid "Pinyin Symbol"
 msgstr ""
 
 #: im/i18nname.c:8
-msgid "Cangjie"
+msgid "Chewing Symbol"
 msgstr ""
 
 #: im/i18nname.c:9
-msgid "Pinyin"
+msgid "Cangjie"
 msgstr ""
 
 #: im/i18nname.c:10
-msgid "Tone Pinyin"
+msgid "Pinyin"
 msgstr ""
 
 #: im/i18nname.c:11
-msgid "Keyboard"
+msgid "Tone Pinyin"
 msgstr ""
 
 #: im/i18nname.c:12
-msgid "Anthy"
+msgid "Keyboard"
 msgstr ""
 
 #: im/i18nname.c:13
-msgid "Hanja"
+msgid "Anthy"
 msgstr ""
 
 #: im/i18nname.c:14
-msgid "Romaja"
+msgid "Hanja"
 msgstr ""
 
 #: im/i18nname.c:15
+msgid "Romaja"
+msgstr ""
+
+#: im/i18nname.c:16
 msgid "Quick"
 msgstr ""
 
