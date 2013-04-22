@@ -1,22 +1,22 @@
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Weng Xuetian <wengxt@gmail.com>, 2012, 2013.
+# Xuetian Weng <wengxt@gmail.com>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-22 04:59-0500\n"
-"PO-Revision-Date: 2013-01-22 04:59-0500\n"
-"Last-Translator: Weng Xuetian <wengxt@gmail.com>\n"
-"Language-Team: Chinese Simplified <kde-china@kde.org>\n"
+"POT-Creation-Date: 2013-04-21 20:16-0400\n"
+"PO-Revision-Date: 2013-01-22 10:00+0000\n"
+"Last-Translator: Xuetian Weng <wengxt@gmail.com>\n"
+"Language-Team: Chinese (China) <fcitx-dev@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 1.5\n"
 
 #: im/fcitx-m17n.c:574
 #, c-format
@@ -43,7 +43,8 @@ msgstr "启用已废弃的输入法"
 msgid ""
 "Enable deprecated input method provided M17N, usually this means something "
 "better is already out (Need restart)"
-msgstr "启用 M17N 提供的已废弃的输入法，通常这意味着更好的输入法已经被支持 (需要重启)"
+msgstr ""
+"启用 M17N 提供的已废弃的输入法，通常这意味着更好的输入法已经被支持 (需要重启)"
 
 #: im/i18nname.c:14
 msgid "Hanja"
@@ -89,4 +90,3 @@ msgstr "罗马字"
 #: im/i18nname.c:11
 msgid "Tone Pinyin"
 msgstr "音调拼音"
-
