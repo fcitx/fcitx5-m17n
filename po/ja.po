@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# しろう <>, 2013
+# しろう, 2013
+# しろう, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-04-25 00:02-0400\n"
-"PO-Revision-Date: 2013-04-14 08:32+0000\n"
-"Last-Translator: しろう <>\n"
+"POT-Creation-Date: 2013-08-07 12:02-0400\n"
+"PO-Revision-Date: 2013-08-07 14:55+0000\n"
+"Last-Translator: しろう\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/fcitx/language/"
 "ja/)\n"
 "Language: ja\n"
@@ -45,6 +46,8 @@ msgid ""
 "Enable deprecated input method provided M17N, usually this means something "
 "better is already out (Need restart)"
 msgstr ""
+"M17Nによって提供されていた廃止予定の入力メソッを有効化します。廃止予定とは、"
+"今はもっといい入力メソッドがあることを通常意味します(再起動が必要)"
 
 #: im/i18nname.c:14
 msgid "Hanja"
