@@ -507,6 +507,7 @@ void FcitxM17NDelIM(IM* im)
 void *FcitxM17NCreate(FcitxInstance* inst)
 {
     bindtextdomain(TEXTDOMAIN, LOCALEDIR);
+    bind_textdomain_codeset(TEXTDOMAIN, "UTF-8");
 
     Addon* addon = (Addon*) fcitx_utils_malloc0(sizeof(Addon));
     addon->owner = inst;
