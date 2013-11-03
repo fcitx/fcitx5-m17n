@@ -342,29 +342,32 @@ MSymbol KeySymToSymbol (FcitxKeySym sym, unsigned int state)
 
     mask |= state & (FcitxKeyState_UsedMask);
 
-    const char* prefix = "";
+    // we have 7 possible below, then 20 is long enough (7 x 2 = 14 < 20)
+    char prefix[20] = "";
 
-    if (mask & FcitxKeyState_Hyper) {
-        prefix = "H-";
+    // and we use reverse order here comparing with other implementation since strcat is append.
+    // I don't know if it matters, but it's just to make sure it works.
+    if (mask & FcitxKeyState_Shift) {
+        strcat(prefix, "S-");
     }
-    if (mask & FcitxKeyState_Super) {
-        prefix = "s-";
+    if (mask & FcitxKeyState_Ctrl) {
+        strcat(prefix, "C-");
+    }
+    if (mask & FcitxKeyState_Meta) {
+        strcat(prefix, "M-");
+    }
+    if (mask & FcitxKeyState_Alt) {
+        strcat(prefix, "A-");
     }
     // This is mysterious. - xiaq
     if (mask & FcitxKeyState_ScrollLock) {
-        prefix = "G-";
+        strcat(prefix, "G-");
     }
-    if (mask & FcitxKeyState_Alt) {
-        prefix = "A-";
+    if (mask & FcitxKeyState_Super) {
+        strcat(prefix, "s-");
     }
-    if (mask & FcitxKeyState_Meta) {
-        prefix = "M-";
-    }
-    if (mask & FcitxKeyState_Ctrl) {
-        prefix = "C-";
-    }
-    if (mask & FcitxKeyState_Shift) {
-        prefix = "S-";
+    if (mask & FcitxKeyState_Hyper) {
+        strcat(prefix, "H-");
     }
 
     char* keystr;
@@ -410,7 +413,6 @@ FcitxIRV FcitxM17NDoInput(void* arg, FcitxKeySym sym, unsigned state)
 FcitxIRV FcitxM17NDoInputInternal(IM* im, FcitxKeySym sym, unsigned state)
 {
     FcitxInstance* inst = im->owner->owner;
-    FcitxInputState* is = FcitxInstanceGetInputState(inst);
     FcitxInputContext* ic = FcitxInstanceGetCurrentIC(inst);
 
     MSymbol msym = KeySymToSymbol(sym, state);
