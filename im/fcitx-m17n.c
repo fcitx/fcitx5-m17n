@@ -62,6 +62,7 @@ static INPUT_RETURN_VALUE FcitxM17NGetCandWord(void *arg, FcitxCandidateWord *ca
 static INPUT_RETURN_VALUE FcitxM17NGetCandWords(void *arg);
 static void               FcitxM17NReload(void *arg);
 static void               FcitxM17NSave(void *arg);
+static void               FcitxM17NOnClose(void* arg, FcitxIMCloseEventType event);
 static IM*                FcitxM17NMakeIM(Addon* owner, MSymbol mlang, MSymbol mname);
 static void               FcitxM17NDelIM(IM* im);
 
@@ -600,6 +601,7 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         iface.Save = FcitxM17NSave;
         iface.ReloadConfig = FcitxM17NReload;
         iface.GetCandWords = FcitxM17NGetCandWords;
+        iface.OnClose = FcitxM17NOnClose;
 
         int priority = 100;
         if (item && strncmp(curlang, lang, 2) == 0 && item->priority > 0)
@@ -739,5 +741,17 @@ FcitxM17NCallback (MInputContext *context,
             FcitxInstanceDeleteSurroundingText (im->owner->owner, ic, len, -len);
         else if (len > 0)
             FcitxInstanceDeleteSurroundingText (im->owner->owner, ic, 0, -len);
+    }
+}
+
+void FcitxM17NOnClose(void* arg, FcitxIMCloseEventType event)
+{
+    IM* im = (IM*) arg;
+    if (event == CET_ChangeByInactivate || event == CET_SwitchIM) {
+        if (im->owner->mic->preedit) {
+            char* preedit = MTextToUTF8(im->owner->mic->preedit);
+            FcitxInstanceCommitString(im->owner->owner, FcitxInstanceGetCurrentIC(im->owner->owner), preedit);
+            free(preedit);
+        }
     }
 }

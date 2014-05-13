@@ -5,7 +5,7 @@ project(fcitx-m17n)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 find_package(M17N REQUIRED)
-find_package(Fcitx 4.2.7 REQUIRED)
+find_package(Fcitx 4.2.8 REQUIRED)
 
 option(ENABLE_TEST "standalone test program" Off)
 
