@@ -592,6 +592,7 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         } else {
             iconName = uniqueName;
         }
+        m17n_object_unref(info);
 
         FcitxIMIFace iface;
         memset(&iface, 0, sizeof(FcitxIMIFace));
@@ -619,6 +620,7 @@ void *FcitxM17NCreate(FcitxInstance* inst)
         free(uniqueName);
         free(fxName);
     }
+    m17n_object_unref(mimlist);
 
     fcitx_utils_free(curlang);
 
