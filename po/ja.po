@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# しろう, 2013
-# しろう, 2013
+# WAKAYAMA Shirou <shirou.faw@gmail.com>, 2013
+# WAKAYAMA Shirou <shirou.faw@gmail.com>, 2013
+# 0bytetest_green <xenolith0bytetestcomgreen@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-08-07 12:02-0400\n"
-"PO-Revision-Date: 2013-08-07 14:55+0000\n"
-"Last-Translator: しろう\n"
+"POT-Creation-Date: 2015-06-20 12:01+0200\n"
+"PO-Revision-Date: 2015-06-20 09:00+0000\n"
+"Last-Translator: 0bytetest_green <xenolith0bytetestcomgreen@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/fcitx/language/"
 "ja/)\n"
 "Language: ja\n"
@@ -20,7 +21,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: im/fcitx-m17n.c:574
+#: im/fcitx-m17n.c:578
 #, c-format
 msgid "%s (M17N)"
 msgstr "%s (M17N)"
@@ -35,7 +36,7 @@ msgstr "Cangjie"
 
 #: im/i18nname.c:8
 msgid "Chewing Symbol"
-msgstr ""
+msgstr "Chewing 記号"
 
 #: im/fcitx-m17n.desc:12
 msgid "Enable deprecated Input method"
