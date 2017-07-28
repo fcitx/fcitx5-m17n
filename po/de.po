@@ -4,12 +4,13 @@
 #
 # Translators:
 # mar well <m.wellendorf@gmx.de>, 2013
+# mar well <m.wellendorf@gmx.de>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-09 07:36-0700\n"
-"PO-Revision-Date: 2013-05-22 06:02+0000\n"
+"POT-Creation-Date: 2017-07-28 05:02-0700\n"
+"PO-Revision-Date: 2017-07-28 11:21+0000\n"
 "Last-Translator: mar well <m.wellendorf@gmx.de>\n"
 "Language-Team: German (http://www.transifex.com/fcitx/fcitx/language/de/)\n"
 "Language: de\n"
@@ -33,7 +34,7 @@ msgstr "Cangjie"
 
 #: im/i18nname.c:8
 msgid "Chewing Symbol"
-msgstr "Symbol Chewing"
+msgstr "Chewing Symbol"
 
 #: im/fcitx-m17n.desc:12
 msgid "Enable deprecated Input method"
