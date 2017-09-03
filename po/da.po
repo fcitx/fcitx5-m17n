@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fcitx\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
 "POT-Creation-Date: 2013-04-25 00:02-0400\n"
-"PO-Revision-Date: 2017-07-15 21:38+0000\n"
+"PO-Revision-Date: 2017-09-03 14:34+0000\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish (http://www.transifex.com/fcitx/fcitx/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: im/fcitx-m17n.c:574
 #, c-format
 msgid "%s (M17N)"
-msgstr ""
+msgstr "%s (M17N)"
 
 #: im/i18nname.c:7
 msgid "Pinyin Symbol"
@@ -66,11 +66,11 @@ msgstr ""
 #: im/fcitx-m17n.conf.in:3 im/fcitx-m17n.desc:1 im/fcitx-m17n.desc:6
 #: im/fcitx-m17n.desc:11
 msgid "M17N"
-msgstr ""
+msgstr "M17N"
 
 #: im/fcitx-m17n.conf.in:4
 msgid "M17N IM Support For Fcitx"
-msgstr ""
+msgstr "M17N IM-understøttelse til Fcitx"
 
 #: im/fcitx-m17n.desc:2
 msgid "Prev Page"
