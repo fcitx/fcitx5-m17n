@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fcitx\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
 "POT-Creation-Date: 2013-04-25 00:02-0400\n"
-"PO-Revision-Date: 2017-09-03 14:34+0000\n"
+"PO-Revision-Date: 2017-09-11 21:29+0000\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish (http://www.transifex.com/fcitx/fcitx/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -25,23 +25,23 @@ msgstr "%s (M17N)"
 
 #: im/i18nname.c:7
 msgid "Pinyin Symbol"
-msgstr ""
+msgstr "Pinyin-symbol"
 
 #: im/i18nname.c:8
 msgid "Chewing Symbol"
-msgstr ""
+msgstr "Chewing-symbol"
 
 #: im/i18nname.c:9
 msgid "Cangjie"
-msgstr ""
+msgstr "Cangjie"
 
 #: im/i18nname.c:10
 msgid "Pinyin"
-msgstr ""
+msgstr "Pinyin"
 
 #: im/i18nname.c:11
 msgid "Tone Pinyin"
-msgstr ""
+msgstr "Tone pinyin"
 
 #: im/i18nname.c:12
 msgid "Keyboard"
@@ -49,19 +49,19 @@ msgstr "Tastatur"
 
 #: im/i18nname.c:13
 msgid "Anthy"
-msgstr ""
+msgstr "Anthy"
 
 #: im/i18nname.c:14
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: im/i18nname.c:15
 msgid "Romaja"
-msgstr ""
+msgstr "Romaja"
 
 #: im/i18nname.c:16
 msgid "Quick"
-msgstr ""
+msgstr "Hurtig"
 
 #: im/fcitx-m17n.conf.in:3 im/fcitx-m17n.desc:1 im/fcitx-m17n.desc:6
 #: im/fcitx-m17n.desc:11
@@ -88,4 +88,4 @@ msgstr "Aktivér udgået inputmetode"
 msgid ""
 "Enable deprecated input method provided M17N, usually this means something "
 "better is already out (Need restart)"
-msgstr ""
+msgstr "Aktivér forældet inputmetode som har leveret M17N. Dette betyder typisk er noget bedre allerede er ude (kræver genstart)"
