@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2017
 # Walter Garcia-Fontes <walter.garcia@upf.edu>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-09-14 16:03-0700\n"
-"PO-Revision-Date: 2017-08-03 16:58+0000\n"
-"Last-Translator: Walter Garcia-Fontes <walter.garcia@upf.edu>\n"
+"POT-Creation-Date: 2017-12-09 00:03-0800\n"
+"PO-Revision-Date: 2017-12-08 18:52+0000\n"
+"Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
 "Language-Team: Catalan (http://www.transifex.com/fcitx/fcitx/language/ca/)\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +46,7 @@ msgid ""
 "better is already out (Need restart)"
 msgstr ""
 "Habilita el mètode d'entrada obsolet M17N, generalment això significa que ja "
-"hi ha quelcom millor disponible (Cal reiniciar)"
+"hi ha quelcom millor disponible (cal reiniciar)"
 
 #: im/i18nname.c:14
 msgid "Hanja"
@@ -62,11 +63,11 @@ msgstr "M17N"
 
 #: im/fcitx-m17n.conf.in:4
 msgid "M17N IM Support For Fcitx"
-msgstr "Suport M17N IM per al fcitx"
+msgstr "Compatibilitat amb el mètode d'entrada M17N per a fcitx"
 
 #: im/fcitx-m17n.desc:7
 msgid "Next Page"
-msgstr "Pàgina següent"
+msgstr "Av Pàg"
 
 #: im/i18nname.c:10
 msgid "Pinyin"
@@ -78,7 +79,7 @@ msgstr "Símbol pinyin"
 
 #: im/fcitx-m17n.desc:2
 msgid "Prev Page"
-msgstr "Pàgina prèvia"
+msgstr "Re Pàg"
 
 #: im/i18nname.c:16
 msgid "Quick"
