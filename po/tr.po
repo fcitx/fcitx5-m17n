@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the fcitx5-m17n package.
 #
 # Translators:
-# Gökhan Kalayci <gkmediagokhan@gmail.com>, 2017
+# csslayer <wengxt@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-20 17:30-0800\n"
-"PO-Revision-Date: 2017-08-03 16:58+0000\n"
-"Last-Translator: Gökhan Kalayci <gkmediagokhan@gmail.com>\n"
-"Language-Team: Turkish (http://www.transifex.com/fcitx/fcitx/language/tr/)\n"
+"POT-Creation-Date: 2017-12-21 00:01-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Language-Team: Turkish (https://www.transifex.com/fcitx/teams/12005/tr/)\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,9 +31,8 @@ msgid "Chewing Symbol"
 msgstr "Çiğneme Sembolü"
 
 #: im/engine.h:35
-#, fuzzy
 msgid "Enable Deprecated"
-msgstr "Kullanımdan kaldırılmış Giriş yöntemini etkinleştir"
+msgstr ""
 
 #: im/i18nname.cpp:14
 msgid "Hanja"
@@ -72,19 +71,5 @@ msgid "Tone Pinyin"
 msgstr "Pinyin Tonu"
 
 #: im/engine.cpp:346
-#, fuzzy
 msgid "{0} (M17N)"
-msgstr "%s (M17N)"
-
-#~ msgid ""
-#~ "Enable deprecated input method provided M17N, usually this means "
-#~ "something better is already out (Need restart)"
-#~ msgstr ""
-#~ "M17N sağlanan onaylanmayan giriş yöntemini etkinleştirin, genellikle bu "
-#~ "daha iyi bir şey zaten çıktı demektir (Yeniden başlatma gerekiyor)"
-
-#~ msgid "Next Page"
-#~ msgstr "Sonraki Sayfa"
-
-#~ msgid "Prev Page"
-#~ msgstr "Önceki Sayfa"
+msgstr ""

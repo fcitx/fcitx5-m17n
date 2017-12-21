@@ -1,18 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the fcitx5-m17n package.
 #
 # Translators:
-# mar well <m.wellendorf@gmx.de>, 2013
-# mar well <m.wellendorf@gmx.de>, 2017
+# csslayer <wengxt@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-20 17:30-0800\n"
-"PO-Revision-Date: 2017-07-28 11:21+0000\n"
-"Last-Translator: mar well <m.wellendorf@gmx.de>\n"
-"Language-Team: German (http://www.transifex.com/fcitx/fcitx/language/de/)\n"
+"POT-Creation-Date: 2017-12-21 00:01-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Language-Team: German (https://www.transifex.com/fcitx/teams/12005/de/)\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,9 +31,8 @@ msgid "Chewing Symbol"
 msgstr "Chewing Symbol"
 
 #: im/engine.h:35
-#, fuzzy
 msgid "Enable Deprecated"
-msgstr "Veraltete Eingabemethode zulassen"
+msgstr ""
 
 #: im/i18nname.cpp:14
 msgid "Hanja"
@@ -73,19 +71,5 @@ msgid "Tone Pinyin"
 msgstr "Töne Pinyin"
 
 #: im/engine.cpp:346
-#, fuzzy
 msgid "{0} (M17N)"
-msgstr "%s (M17N)"
-
-#~ msgid ""
-#~ "Enable deprecated input method provided M17N, usually this means "
-#~ "something better is already out (Need restart)"
-#~ msgstr ""
-#~ "Veraltete Eingabemethode (M17N) zulassen. Normalerweise heißt das, es "
-#~ "gibt schon eine neuere Version (Neustart von Fcitx erforderlich)"
-
-#~ msgid "Next Page"
-#~ msgstr "Nächste Seite"
-
-#~ msgid "Prev Page"
-#~ msgstr "Vorherige Seite"
+msgstr ""
