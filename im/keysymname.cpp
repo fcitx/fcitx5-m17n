@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2012~2017 by CSSlayer
+// Copyright (C) 2017~2017 by CSSlayer
 // wengxt@gmail.com
 //
 // This library is free software; you can redistribute it and/or modify
@@ -16,23 +16,25 @@
 // License along with this library; see the file COPYING. If not,
 // see <http://www.gnu.org/licenses/>.
 //
-#ifndef _IM_OVERRIDEPARSER_H_
-#define _IM_OVERRIDEPARSER_H_
 
-#include <string>
-#include <vector>
+#include "keysymname.h"
 
-struct OverrideItem {
-    std::string lang;
-    std::string name;
-    int priority;
-    std::string i18nName;
-    int wildcardCount;
-};
+namespace fcitx {
+std::string KeySymName(KeySym keyval) {
+    char buf[100];
 
-std::vector<OverrideItem> ParseDefaultSettings(FILE *fp);
-const OverrideItem *MatchDefaultSettings(const std::vector<OverrideItem> &list,
-                                         const std::string &lang,
-                                         const std::string &name);
+    /* Check for directly encoded 24-bit UCS characters: */
+    if ((keyval & 0xff000000) == 0x01000000) {
+        sprintf(buf, "U+%.04X", (keyval & 0x00ffffff));
+        return buf;
+    }
 
-#endif // _IM_OVERRIDEPARSER_H_
+    auto name = Key::keySymToString(keyval);
+    if (name.empty() && keyval != FcitxKey_None) {
+        sprintf(buf, "%#x", keyval);
+        return buf;
+    }
+    return name;
+}
+
+} // namespace fcitx

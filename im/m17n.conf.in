@@ -1,0 +1,8 @@
+[Addon]
+Name=M17N
+Comment=M17N IM Support For Fcitx
+Category=InputMethod
+Enabled=True
+Library=m17n
+Type=SharedLibrary
+Configurable=True

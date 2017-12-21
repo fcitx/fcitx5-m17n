@@ -1,9 +1,0 @@
-[Addon]
-Name=fcitx-m17n
-_GeneralName=M17N
-_Comment=M17N IM Support For Fcitx
-Category=InputMethod
-Enabled=True
-Library=fcitx-m17n.so
-Type=SharedLibrary
-IMRegisterMethod=Self

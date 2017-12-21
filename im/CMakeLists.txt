@@ -1,34 +1,15 @@
-include_directories (${M17N_INCLUDE_DIR}
-                     ${PROJECT_BINARY_DIR}
-                     ${FCITX4_FCITX_INCLUDE_DIRS}
-                     ${FCITX4_FCITX_CONFIG_INCLUDE_DIRS}
-                     ${FCITX4_FCITX_UTILS_INCLUDE_DIRS})
-
-set( fcitx_m17n_sources
-    fcitx-m17n.c
-    keysymname.c
-    config.c
-    overrideparser.c
+set(fcitx_m17n_sources
+    engine.cpp
+    overrideparser.cpp
+    keysymname.cpp
     )
 
-fcitx_translate_add_sources(
-    fcitx-m17n.h
-    keyname.h
-    keysymname.h
-    minput_list.h
-    overrideparser.h
-    i18nname.c
-    )
+add_library(m17n MODULE ${fcitx_m17n_sources})
+target_link_libraries(m17n Fcitx5::Core Fcitx5::Config ${FMT_TARGET} PkgConfig::M17NGui)
+target_include_directories(m17n PRIVATE ${PROJECT_BINARY_DIR})
+set_target_properties(m17n PROPERTIES PREFIX "")
+install(TARGETS m17n DESTINATION "${CMAKE_INSTALL_LIBDIR}/fcitx5")
+fcitx5_translate_desktop_file(m17n.conf.in m17n.conf)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/m17n.conf" DESTINATION "${FCITX_INSTALL_PKGDATADIR}/addon")
 
-if (NEED_MINPUT_LIST)
-    set(fcitx_m17n_sources ${fcitx_m17n_sources} minput_list.c)
-endif (NEED_MINPUT_LIST)
-
-add_definitions( -DLOCALEDIR=\"${CMAKE_INSTALL_PREFIX}/share/locale\" )
-
-fcitx_add_addon_full(m17n DESC
-    SOURCES ${fcitx_m17n_sources}
-    LINK_LIBS ${M17N_LIBRARIES}
-)
-
-install(FILES default DESTINATION ${FCITX4_PREFIX}/share/fcitx/m17n)
+install(FILES default DESTINATION "${CMAKE_INSTALL_DATADIR}/fcitx5/m17n")
