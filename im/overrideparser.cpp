@@ -38,10 +38,6 @@ std::vector<OverrideItem> ParseDefaultSettings(FILE *fp) {
             const auto &lang = strList[0];
             const auto &name = strList[1];
             const auto &sPriority = strList[2];
-            const char *i18nname = nullptr;
-            if (strList.size() == 4) {
-                i18nname = strList[3].data();
-            }
 
             int priority = std::stoi(sPriority);
             list.emplace_back();

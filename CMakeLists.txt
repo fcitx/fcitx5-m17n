@@ -23,7 +23,7 @@ endif ()
 option(ENABLE_TEST "standalone test program" Off)
 
 include("${FCITX_INSTALL_CMAKECONFIG_DIR}/Fcitx5Utils/Fcitx5CompilerSettings.cmake")
-add_definitions(-D_GNU_SOURCE)
+add_definitions(-DFCITX_GETTEXT_DOMAIN=\"fcitx5-m17n\" -D_GNU_SOURCE)
 
 add_subdirectory(po)
 add_subdirectory(im)
