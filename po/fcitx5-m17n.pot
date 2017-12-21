@@ -1,14 +1,12 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the fcitx5-m17n package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-04-25 00:02-0400\n"
+"POT-Creation-Date: 2017-12-20 17:30-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,74 +15,58 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: im/fcitx-m17n.c:574
-#, c-format
-msgid "%s (M17N)"
-msgstr ""
-
-#: im/i18nname.c:7
-msgid "Pinyin Symbol"
-msgstr ""
-
-#: im/i18nname.c:8
-msgid "Chewing Symbol"
-msgstr ""
-
-#: im/i18nname.c:9
-msgid "Cangjie"
-msgstr ""
-
-#: im/i18nname.c:10
-msgid "Pinyin"
-msgstr ""
-
-#: im/i18nname.c:11
-msgid "Tone Pinyin"
-msgstr ""
-
-#: im/i18nname.c:12
-msgid "Keyboard"
-msgstr ""
-
-#: im/i18nname.c:13
+#: im/i18nname.cpp:13
 msgid "Anthy"
 msgstr ""
 
-#: im/i18nname.c:14
+#: im/i18nname.cpp:9
+msgid "Cangjie"
+msgstr ""
+
+#: im/i18nname.cpp:8
+msgid "Chewing Symbol"
+msgstr ""
+
+#: im/engine.h:35
+msgid "Enable Deprecated"
+msgstr ""
+
+#: im/i18nname.cpp:14
 msgid "Hanja"
 msgstr ""
 
-#: im/i18nname.c:15
-msgid "Romaja"
+#: im/i18nname.cpp:12
+msgid "Keyboard"
 msgstr ""
 
-#: im/i18nname.c:16
-msgid "Quick"
-msgstr ""
-
-#: im/fcitx-m17n.conf.in:3 im/fcitx-m17n.desc:1 im/fcitx-m17n.desc:6
-#: im/fcitx-m17n.desc:11
+#: im/m17n.conf.in:3
 msgid "M17N"
 msgstr ""
 
-#: im/fcitx-m17n.conf.in:4
+#: im/m17n.conf.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr ""
 
-#: im/fcitx-m17n.desc:2
-msgid "Prev Page"
+#: im/i18nname.cpp:10
+msgid "Pinyin"
 msgstr ""
 
-#: im/fcitx-m17n.desc:7
-msgid "Next Page"
+#: im/i18nname.cpp:7
+msgid "Pinyin Symbol"
 msgstr ""
 
-#: im/fcitx-m17n.desc:12
-msgid "Enable deprecated Input method"
+#: im/i18nname.cpp:16
+msgid "Quick"
 msgstr ""
 
-#: im/fcitx-m17n.desc:15
-msgid ""
-"Enable deprecated input method provided M17N, usually this means something "
-"better is already out (Need restart)"
+#: im/i18nname.cpp:15
+msgid "Romaja"
+msgstr ""
+
+#: im/i18nname.cpp:11
+msgid "Tone Pinyin"
+msgstr ""
+
+#: im/engine.cpp:346
+msgid "{0} (M17N)"
 msgstr ""

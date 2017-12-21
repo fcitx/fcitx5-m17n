@@ -7,9 +7,9 @@
 # Walter Garcia-Fontes <walter.garcia@upf.edu>, 2017
 msgid ""
 msgstr ""
-"Project-Id-Version: fcitx\n"
+"Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-09 00:03-0800\n"
+"POT-Creation-Date: 2017-12-20 17:30-0800\n"
 "PO-Revision-Date: 2017-12-08 18:52+0000\n"
 "Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
 "Language-Team: Catalan (http://www.transifex.com/fcitx/fcitx/language/ca/)\n"
@@ -19,76 +19,73 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: im/fcitx-m17n.c:578
-#, c-format
-msgid "%s (M17N)"
-msgstr "%s (M17N)"
-
-#: im/i18nname.c:13
+#: im/i18nname.cpp:13
 msgid "Anthy"
 msgstr "Anthy"
 
-#: im/i18nname.c:9
+#: im/i18nname.cpp:9
 msgid "Cangjie"
 msgstr "Cangjie"
 
-#: im/i18nname.c:8
+#: im/i18nname.cpp:8
 msgid "Chewing Symbol"
 msgstr "Símbol chewing"
 
-#: im/fcitx-m17n.desc:12
-msgid "Enable deprecated Input method"
+#: im/engine.h:35
+#, fuzzy
+msgid "Enable Deprecated"
 msgstr "Habilita el mètode d'entrada obsolet"
 
-#: im/fcitx-m17n.desc:15
-msgid ""
-"Enable deprecated input method provided M17N, usually this means something "
-"better is already out (Need restart)"
-msgstr ""
-"Habilita el mètode d'entrada obsolet M17N, generalment això significa que ja "
-"hi ha quelcom millor disponible (cal reiniciar)"
-
-#: im/i18nname.c:14
+#: im/i18nname.cpp:14
 msgid "Hanja"
 msgstr "Hanja"
 
-#: im/i18nname.c:12
+#: im/i18nname.cpp:12
 msgid "Keyboard"
 msgstr "Teclat"
 
-#: im/fcitx-m17n.conf.in:3 im/fcitx-m17n.desc:1 im/fcitx-m17n.desc:6
-#: im/fcitx-m17n.desc:11
+#: im/m17n.conf.in:3
 msgid "M17N"
 msgstr "M17N"
 
-#: im/fcitx-m17n.conf.in:4
+#: im/m17n.conf.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr "Compatibilitat amb el mètode d'entrada M17N per a fcitx"
 
-#: im/fcitx-m17n.desc:7
-msgid "Next Page"
-msgstr "Av Pàg"
-
-#: im/i18nname.c:10
+#: im/i18nname.cpp:10
 msgid "Pinyin"
 msgstr "Pinyin"
 
-#: im/i18nname.c:7
+#: im/i18nname.cpp:7
 msgid "Pinyin Symbol"
 msgstr "Símbol pinyin"
 
-#: im/fcitx-m17n.desc:2
-msgid "Prev Page"
-msgstr "Re Pàg"
-
-#: im/i18nname.c:16
+#: im/i18nname.cpp:16
 msgid "Quick"
 msgstr "Ràpid"
 
-#: im/i18nname.c:15
+#: im/i18nname.cpp:15
 msgid "Romaja"
 msgstr "Romaja"
 
-#: im/i18nname.c:11
+#: im/i18nname.cpp:11
 msgid "Tone Pinyin"
 msgstr "Tone Pinyin"
+
+#: im/engine.cpp:346
+#, fuzzy
+msgid "{0} (M17N)"
+msgstr "%s (M17N)"
+
+#~ msgid ""
+#~ "Enable deprecated input method provided M17N, usually this means "
+#~ "something better is already out (Need restart)"
+#~ msgstr ""
+#~ "Habilita el mètode d'entrada obsolet M17N, generalment això significa que "
+#~ "ja hi ha quelcom millor disponible (cal reiniciar)"
+
+#~ msgid "Next Page"
+#~ msgstr "Av Pàg"
+
+#~ msgid "Prev Page"
+#~ msgstr "Re Pàg"

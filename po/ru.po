@@ -6,9 +6,9 @@
 # TotalCaesar659 <x24cm5b8c54q6szxw@yandex.ru>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: fcitx\n"
+"Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-09-14 16:03-0700\n"
+"POT-Creation-Date: 2017-12-20 17:30-0800\n"
 "PO-Revision-Date: 2017-08-03 16:58+0000\n"
 "Last-Translator: TotalCaesar659 <x24cm5b8c54q6szxw@yandex.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/fcitx/fcitx/language/ru/)\n"
@@ -20,76 +20,73 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: im/fcitx-m17n.c:578
-#, c-format
-msgid "%s (M17N)"
-msgstr "%s (M17N)"
-
-#: im/i18nname.c:13
+#: im/i18nname.cpp:13
 msgid "Anthy"
 msgstr "Anthy"
 
-#: im/i18nname.c:9
+#: im/i18nname.cpp:9
 msgid "Cangjie"
 msgstr "Цанцзе"
 
-#: im/i18nname.c:8
+#: im/i18nname.cpp:8
 msgid "Chewing Symbol"
 msgstr "Символ чжуинь"
 
-#: im/fcitx-m17n.desc:12
-msgid "Enable deprecated Input method"
+#: im/engine.h:35
+#, fuzzy
+msgid "Enable Deprecated"
 msgstr "Включить неподдерживаемый метод ввода"
 
-#: im/fcitx-m17n.desc:15
-msgid ""
-"Enable deprecated input method provided M17N, usually this means something "
-"better is already out (Need restart)"
-msgstr ""
-"Включить неподдерживаемый метод ввода из комплекта M17N. Обычно это значит, "
-"что лучшего ничего нет (необходим перезапуск)"
-
-#: im/i18nname.c:14
+#: im/i18nname.cpp:14
 msgid "Hanja"
 msgstr "Hanja"
 
-#: im/i18nname.c:12
+#: im/i18nname.cpp:12
 msgid "Keyboard"
 msgstr "Клавиатура"
 
-#: im/fcitx-m17n.conf.in:3 im/fcitx-m17n.desc:1 im/fcitx-m17n.desc:6
-#: im/fcitx-m17n.desc:11
+#: im/m17n.conf.in:3
 msgid "M17N"
 msgstr "M17N"
 
-#: im/fcitx-m17n.conf.in:4
+#: im/m17n.conf.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr "Поддержка M17N IM в Fcitx"
 
-#: im/fcitx-m17n.desc:7
-msgid "Next Page"
-msgstr "Следующая страница"
-
-#: im/i18nname.c:10
+#: im/i18nname.cpp:10
 msgid "Pinyin"
 msgstr "Пиньинь"
 
-#: im/i18nname.c:7
+#: im/i18nname.cpp:7
 msgid "Pinyin Symbol"
 msgstr "Символ пиньинь"
 
-#: im/fcitx-m17n.desc:2
-msgid "Prev Page"
-msgstr "Предыдущая страница"
-
-#: im/i18nname.c:16
+#: im/i18nname.cpp:16
 msgid "Quick"
 msgstr "Быстро"
 
-#: im/i18nname.c:15
+#: im/i18nname.cpp:15
 msgid "Romaja"
 msgstr "Romaja"
 
-#: im/i18nname.c:11
+#: im/i18nname.cpp:11
 msgid "Tone Pinyin"
 msgstr "Тон пиньинь"
+
+#: im/engine.cpp:346
+#, fuzzy
+msgid "{0} (M17N)"
+msgstr "%s (M17N)"
+
+#~ msgid ""
+#~ "Enable deprecated input method provided M17N, usually this means "
+#~ "something better is already out (Need restart)"
+#~ msgstr ""
+#~ "Включить неподдерживаемый метод ввода из комплекта M17N. Обычно это "
+#~ "значит, что лучшего ничего нет (необходим перезапуск)"
+
+#~ msgid "Next Page"
+#~ msgstr "Следующая страница"
+
+#~ msgid "Prev Page"
+#~ msgstr "Предыдущая страница"
