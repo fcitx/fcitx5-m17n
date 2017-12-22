@@ -4,13 +4,14 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
+# scootergrisen <scootergrisen@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-21 00:01-0800\n"
+"POT-Creation-Date: 2017-12-22 00:01-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Last-Translator: scootergrisen <scootergrisen@gmail.com>, 2017\n"
 "Language-Team: Danish (https://www.transifex.com/fcitx/teams/12005/da/)\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +33,7 @@ msgstr "Chewing-symbol"
 
 #: im/engine.h:35
 msgid "Enable Deprecated"
-msgstr ""
+msgstr "Aktivér udgået"
 
 #: im/i18nname.cpp:14
 msgid "Hanja"
@@ -72,4 +73,4 @@ msgstr "Tone pinyin"
 
 #: im/engine.cpp:346
 msgid "{0} (M17N)"
-msgstr ""
+msgstr "{0} (M17N)"
