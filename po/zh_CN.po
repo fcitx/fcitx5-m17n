@@ -4,13 +4,14 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
+# Mingcong Bai <jeffbai@aosc.xyz>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-21 00:01-0800\n"
+"POT-Creation-Date: 2017-12-27 00:01-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Last-Translator: Mingcong Bai <jeffbai@aosc.xyz>, 2017\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/fcitx/teams/12005/"
 "zh_CN/)\n"
 "Language: zh_CN\n"
@@ -33,7 +34,7 @@ msgstr "注音符号"
 
 #: im/engine.h:35
 msgid "Enable Deprecated"
-msgstr ""
+msgstr "启用已废弃的输入法"
 
 #: im/i18nname.cpp:14
 msgid "Hanja"
@@ -73,4 +74,4 @@ msgstr "音调拼音"
 
 #: im/engine.cpp:346
 msgid "{0} (M17N)"
-msgstr ""
+msgstr "{0} (M17N)"
