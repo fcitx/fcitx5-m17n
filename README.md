@@ -1,9 +1,14 @@
-==========
 Fcitx-m17n
-==========
+========
 
 This is the source tree of fcitx-m17n, some trivial little codes the wrap the
 m17n input method engine into a fcitx input method.
+
+
+[![Jenkins Build Status](https://img.shields.io/jenkins/s/https/jenkins.fcitx-im.org/job/fcitx5-m17n.svg)](https://jenkins.fcitx-im.org/job/fcitx5-m17n/)
+
+[![Coverity Scan Status](https://img.shields.io/coverity/scan/14675.svg)](https://scan.coverity.com/projects/fcitx-fcitx5-m17n)
+
 
 Source Tree
 ===========
@@ -20,9 +25,11 @@ Dependency, Building and Installation
 
 Fcitx-m17n is maintained using CMake. To install, run::
 
+```
   mkdir build; cd build
   cmake .. [ FLAGS ] 
   make && make install
+```
 
 To install to /usr, include ``-DCMAKE_INSTALL_PREFIX=/usr`` in ``FLAGS``. To
 build with debug symbols, include ``-DCMAKE_BUILD_TYPE``. You may as well
