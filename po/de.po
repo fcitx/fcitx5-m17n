@@ -4,13 +4,14 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
+# mar well <m.wellendorf@gmx.de>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-21 00:01-0800\n"
+"POT-Creation-Date: 2018-06-20 00:02-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Last-Translator: mar well <m.wellendorf@gmx.de>, 2018\n"
 "Language-Team: German (https://www.transifex.com/fcitx/teams/12005/de/)\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -72,4 +73,4 @@ msgstr "Töne Pinyin"
 
 #: im/engine.cpp:346
 msgid "{0} (M17N)"
-msgstr ""
+msgstr "{0} (M17N)"
