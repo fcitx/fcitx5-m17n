@@ -5,13 +5,15 @@
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
 # mar well <m.wellendorf@gmx.de>, 2018
+# Tim Hofstede <timhofstede.va@gmail.com>, 2018
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-06-20 00:02-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: mar well <m.wellendorf@gmx.de>, 2018\n"
+"POT-Creation-Date: 2018-11-04 00:01-0700\n"
+"PO-Revision-Date: 2017-12-21 01:32+0000\n"
+"Last-Translator: Tim Hofstede <timhofstede.va@gmail.com>, 2018\n"
 "Language-Team: German (https://www.transifex.com/fcitx/teams/12005/de/)\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +35,7 @@ msgstr "Chewing Symbol"
 
 #: im/engine.h:35
 msgid "Enable Deprecated"
-msgstr ""
+msgstr "Aktiviere Veraltete"
 
 #: im/i18nname.cpp:14
 msgid "Hanja"
