@@ -227,7 +227,7 @@ public:
                     MText *word = static_cast<MText *>(mplist_value(head2));
                     // Fcitx will do the free() for us.
                     auto str = MTextToUTF8(word);
-                    append(new M17NCandidateWord(engine_, str, index));
+                    append<M17NCandidateWord>(engine_, str, index);
                     index++;
                 }
             } else if (key == Mtext) {
@@ -238,7 +238,7 @@ public:
                      ++p) {
                     auto charRange = p.charRange();
                     std::string str(charRange.first, charRange.second);
-                    append(new M17NCandidateWord(engine_, str, index));
+                    append<M17NCandidateWord>(engine_, str, index);
                     index++;
                 }
             } else {
@@ -578,6 +578,6 @@ void M17NState::select(int index) {
         sym = static_cast<KeySym>(FcitxKey_1 + (delta % 10));
     keyEvent(Key(sym));
 }
-}
+} // namespace fcitx
 
 FCITX_ADDON_FACTORY(fcitx::M17NEngineFactory)
