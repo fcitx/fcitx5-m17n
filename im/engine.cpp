@@ -138,7 +138,7 @@ MSymbol KeySymToSymbol(Key key) {
         strcat(prefix, "A-");
     }
     // This is mysterious. - xiaq
-    if (mask & KeyState::ScrollLock) {
+    if (mask & KeyState::Mod5) {
         strcat(prefix, "G-");
     }
     if (mask & KeyState::Super) {

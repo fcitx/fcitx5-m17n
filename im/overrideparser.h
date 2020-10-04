@@ -23,11 +23,11 @@
 #include <vector>
 
 struct OverrideItem {
-  std::string lang;
-  std::string name;
-  int priority;
-  std::string i18nName;
-  int wildcardCount;
+    std::string lang;
+    std::string name;
+    int priority;
+    std::string i18nName;
+    int wildcardCount;
 };
 
 std::vector<OverrideItem> ParseDefaultSettings(FILE *fp);
