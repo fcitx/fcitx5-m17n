@@ -4,14 +4,15 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
-# Jeff Huang <s8321414@gmail.com>, 2017
+# 黃柏諺 <s8321414@gmail.com>, 2017
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-21 00:01-0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Jeff Huang <s8321414@gmail.com>, 2017\n"
+"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"PO-Revision-Date: 2017-12-21 01:32+0000\n"
+"Last-Translator: 黃柏諺 <s8321414@gmail.com>, 2017\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/fcitx/teams/12005/"
 "zh_TW/)\n"
 "Language: zh_TW\n"
@@ -20,27 +21,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: im/i18nname.cpp:13
+#: im/i18nname.cpp:15
 msgid "Anthy"
 msgstr "Anthy"
 
-#: im/i18nname.cpp:9
+#: im/i18nname.cpp:13
 msgid "Cangjie"
 msgstr "倉頡"
 
-#: im/i18nname.cpp:8
+#: im/i18nname.cpp:13
 msgid "Chewing Symbol"
 msgstr "注音符號"
 
-#: im/engine.h:35
+#: im/engine.h:23
 msgid "Enable Deprecated"
 msgstr "啟用已棄用的"
 
-#: im/i18nname.cpp:14
+#: im/i18nname.cpp:15
 msgid "Hanja"
 msgstr "漢字"
 
-#: im/i18nname.cpp:12
+#: im/i18nname.cpp:14
 msgid "Keyboard"
 msgstr "鍵盤"
 
@@ -52,11 +53,20 @@ msgstr "M17N"
 msgid "M17N IM Support For Fcitx"
 msgstr "Fcitx 的 M17N 輸入法支援"
 
-#: im/i18nname.cpp:10
+#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+msgid "M17N Input method"
+msgstr ""
+
+#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+msgid "M17N for Fcitx 5"
+msgstr ""
+
+#: im/i18nname.cpp:14
 msgid "Pinyin"
 msgstr "拼音"
 
-#: im/i18nname.cpp:7
+#. remember to update "default" in the same directory.
+#: im/i18nname.cpp:13
 msgid "Pinyin Symbol"
 msgstr "拼音符號"
 
@@ -68,10 +78,10 @@ msgstr "速成"
 msgid "Romaja"
 msgstr "羅馬字"
 
-#: im/i18nname.cpp:11
+#: im/i18nname.cpp:14
 msgid "Tone Pinyin"
 msgstr "音調拼音"
 
-#: im/engine.cpp:346
+#: im/engine.cpp:334
 msgid "{0} (M17N)"
 msgstr "{0} (M17N)"

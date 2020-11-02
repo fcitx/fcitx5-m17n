@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-20 17:30-0800\n"
+"POT-Creation-Date: 2020-11-02 15:55-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,27 +15,27 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: im/i18nname.cpp:13
+#: im/i18nname.cpp:15
 msgid "Anthy"
 msgstr ""
 
-#: im/i18nname.cpp:9
+#: im/i18nname.cpp:13
 msgid "Cangjie"
 msgstr ""
 
-#: im/i18nname.cpp:8
+#: im/i18nname.cpp:13
 msgid "Chewing Symbol"
 msgstr ""
 
-#: im/engine.h:35
+#: im/engine.h:23
 msgid "Enable Deprecated"
 msgstr ""
 
-#: im/i18nname.cpp:14
+#: im/i18nname.cpp:15
 msgid "Hanja"
 msgstr ""
 
-#: im/i18nname.cpp:12
+#: im/i18nname.cpp:14
 msgid "Keyboard"
 msgstr ""
 
@@ -47,11 +47,20 @@ msgstr ""
 msgid "M17N IM Support For Fcitx"
 msgstr ""
 
-#: im/i18nname.cpp:10
+#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+msgid "M17N Input method"
+msgstr ""
+
+#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+msgid "M17N for Fcitx 5"
+msgstr ""
+
+#: im/i18nname.cpp:14
 msgid "Pinyin"
 msgstr ""
 
-#: im/i18nname.cpp:7
+#. remember to update "default" in the same directory.
+#: im/i18nname.cpp:13
 msgid "Pinyin Symbol"
 msgstr ""
 
@@ -63,10 +72,10 @@ msgstr ""
 msgid "Romaja"
 msgstr ""
 
-#: im/i18nname.cpp:11
+#: im/i18nname.cpp:14
 msgid "Tone Pinyin"
 msgstr ""
 
-#: im/engine.cpp:346
+#: im/engine.cpp:334
 msgid "{0} (M17N)"
 msgstr ""

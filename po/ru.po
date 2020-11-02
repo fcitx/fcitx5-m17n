@@ -4,12 +4,13 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-12-21 00:01-0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"PO-Revision-Date: 2017-12-21 01:32+0000\n"
 "Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
 "Language-Team: Russian (https://www.transifex.com/fcitx/teams/12005/ru/)\n"
 "Language: ru\n"
@@ -20,27 +21,27 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: im/i18nname.cpp:13
+#: im/i18nname.cpp:15
 msgid "Anthy"
 msgstr "Anthy"
 
-#: im/i18nname.cpp:9
+#: im/i18nname.cpp:13
 msgid "Cangjie"
 msgstr "Цанцзе"
 
-#: im/i18nname.cpp:8
+#: im/i18nname.cpp:13
 msgid "Chewing Symbol"
 msgstr "Символ чжуинь"
 
-#: im/engine.h:35
+#: im/engine.h:23
 msgid "Enable Deprecated"
 msgstr ""
 
-#: im/i18nname.cpp:14
+#: im/i18nname.cpp:15
 msgid "Hanja"
 msgstr "Hanja"
 
-#: im/i18nname.cpp:12
+#: im/i18nname.cpp:14
 msgid "Keyboard"
 msgstr "Клавиатура"
 
@@ -52,11 +53,20 @@ msgstr "M17N"
 msgid "M17N IM Support For Fcitx"
 msgstr "Поддержка M17N IM в Fcitx"
 
-#: im/i18nname.cpp:10
+#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+msgid "M17N Input method"
+msgstr ""
+
+#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+msgid "M17N for Fcitx 5"
+msgstr ""
+
+#: im/i18nname.cpp:14
 msgid "Pinyin"
 msgstr "Пиньинь"
 
-#: im/i18nname.cpp:7
+#. remember to update "default" in the same directory.
+#: im/i18nname.cpp:13
 msgid "Pinyin Symbol"
 msgstr "Символ пиньинь"
 
@@ -68,10 +78,10 @@ msgstr "Быстро"
 msgid "Romaja"
 msgstr "Romaja"
 
-#: im/i18nname.cpp:11
+#: im/i18nname.cpp:14
 msgid "Tone Pinyin"
 msgstr "Тон пиньинь"
 
-#: im/engine.cpp:346
+#: im/engine.cpp:334
 msgid "{0} (M17N)"
 msgstr ""
