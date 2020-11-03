@@ -3,7 +3,7 @@
   <id>org.fcitx.fcitx5-m17n</id>
   <extends>org.fcitx.Fcitx5.desktop</extends>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0+</project_license>
+  <project_license>LGPL-2.1+</project_license>
   <name>M17N for Fcitx 5</name>
   <summary>M17N Input method</summary>
   <url type="homepage">https://fcitx-im.org</url>
