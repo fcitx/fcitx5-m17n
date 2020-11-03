@@ -3,16 +3,16 @@
 # This file is distributed under the same license as the fcitx5-m17n package.
 #
 # Translators:
-# csslayer <wengxt@gmail.com>, 2017
 # Mingcong Bai <jeffbai@aosc.xyz>, 2017
+# csslayer <wengxt@gmail.com>, 2020
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"POT-Creation-Date: 2020-11-02 16:11-0800\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
-"Last-Translator: Mingcong Bai <jeffbai@aosc.xyz>, 2017\n"
+"Last-Translator: csslayer <wengxt@gmail.com>, 2020\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/fcitx/teams/12005/"
 "zh_CN/)\n"
 "Language: zh_CN\n"
@@ -55,11 +55,11 @@ msgstr "Fcitx 的 M17N 输入法支持"
 
 #: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
 msgid "M17N Input method"
-msgstr ""
+msgstr "M17N 输入法"
 
 #: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
-msgstr ""
+msgstr "Fcitx 5 的 M17N 支持"
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
