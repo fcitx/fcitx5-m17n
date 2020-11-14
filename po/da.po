@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-11-03 00:02-0800\n"
+"POT-Creation-Date: 2020-11-14 00:02-0800\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
 "Last-Translator: scootergrisen, 2020\n"
 "Language-Team: Danish (https://www.transifex.com/fcitx/teams/12005/da/)\n"
@@ -54,7 +54,7 @@ msgstr "M17N IM-understøttelse til Fcitx"
 
 #: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
 msgid "M17N Input method"
-msgstr "M17N inputmetode"
+msgstr "M17N-inputmetode"
 
 #: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
