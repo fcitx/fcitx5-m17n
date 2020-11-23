@@ -8,7 +8,7 @@ include(FeatureSummary)
 include(GNUInstallDirs)
 include(ECMUninstallTarget)
 
-find_package(Fcitx5Core REQUIRED)
+find_package(Fcitx5Core 5.0.2 REQUIRED)
 find_package(Gettext REQUIRED)
 find_package(fmt REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -24,13 +24,14 @@ option(ENABLE_TEST "standalone test program" Off)
 
 include("${FCITX_INSTALL_CMAKECONFIG_DIR}/Fcitx5Utils/Fcitx5CompilerSettings.cmake")
 add_definitions(-DFCITX_GETTEXT_DOMAIN=\"fcitx5-m17n\" -D_GNU_SOURCE)
+fcitx5_add_i18n_definition()
 
 add_subdirectory(po)
 add_subdirectory(im)
 
-fcitx5_translate_desktop_file(org.fcitx.fcitx5-m17n.metainfo.xml.in
-                              org.fcitx.fcitx5-m17n.metainfo.xml XML)
+fcitx5_translate_desktop_file(org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in
+    org.fcitx.Fcitx5.Addon.M17N.metainfo.xml XML)
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/org.fcitx.fcitx5-m17n.metainfo.xml" DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/org.fcitx.Fcitx5.Addon.M17N.metainfo.xml" DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

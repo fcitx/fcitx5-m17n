@@ -88,6 +88,7 @@ private:
 
 class M17NEngineFactory : public AddonFactory {
     fcitx::AddonInstance *create(fcitx::AddonManager *manager) override {
+        registerDomain("fcitx5-m17n", FCITX_INSTALL_LOCALEDIR);
         return new M17NEngine(manager->instance());
     }
 };
