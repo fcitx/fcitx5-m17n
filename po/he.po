@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the fcitx5-m17n package.
 #
 # Translators:
-# Omer I.S., 2020
+# Omer I.S. <omeritzicschwartz@gmail.com>, 2021
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"POT-Creation-Date: 2021-01-15 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
-"Last-Translator: Omer I.S., 2020\n"
+"Last-Translator: Omer I.S. <omeritzicschwartz@gmail.com>, 2021\n"
 "Language-Team: Hebrew (https://www.transifex.com/fcitx/teams/12005/he/)\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
@@ -52,17 +52,17 @@ msgstr ""
 msgid "M17N IM Support For Fcitx"
 msgstr ""
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:8
 msgid "M17N Input method"
 msgstr ""
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
 msgstr ""
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
-msgstr ""
+msgstr "פִּנְיִין"
 
 #. remember to update "default" in the same directory.
 #: im/i18nname.cpp:13
