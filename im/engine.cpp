@@ -137,7 +137,7 @@ MSymbol KeySymToSymbol(Key key) {
     }
 
     std::string keystr = stringutils::concat(static_cast<char *>(prefix), base);
-    FCITX_M17N_DEBUG() << "M17n key str: " << keystr;
+    FCITX_M17N_DEBUG() << "M17n key str: " << keystr << " " << key;
     mkeysym = msymbol(keystr.data());
 
     return mkeysym;
@@ -446,7 +446,7 @@ void M17NState::keyEvent(const InputMethodEntry &entry, KeyEvent &keyEvent) {
         mic_.reset(minput_create_ic(mim_.get(), this));
     }
 
-    if (this->keyEvent(keyEvent.key())) {
+    if (this->keyEvent(keyEvent.rawKey())) {
         keyEvent.filterAndAccept();
     }
 }
