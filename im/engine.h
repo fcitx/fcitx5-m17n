@@ -48,6 +48,7 @@ public:
     void updateUI();
     void select(int index);
     void reset();
+    void commitPreedit();
     bool keyEvent(const Key &key);
 
     static void callback(MInputContext *context, MSymbol command);
@@ -64,6 +65,8 @@ public:
 
     void activate(const fcitx::InputMethodEntry &,
                   fcitx::InputContextEvent &) override;
+    void deactivate(const fcitx::InputMethodEntry &entry,
+                    fcitx::InputContextEvent &event) override;
     void keyEvent(const fcitx::InputMethodEntry &entry,
                   fcitx::KeyEvent &keyEvent) override;
     void reloadConfig() override;

@@ -86,12 +86,14 @@ MSymbol KeySymToSymbol(Key key) {
     if (key.sym() >= FcitxKey_space && key.sym() <= FcitxKey_asciitilde) {
         KeySym c = key.sym();
 
-        if (key.sym() == FcitxKey_space && key.states().test(KeyState::Shift))
+        if (key.sym() == FcitxKey_space && key.states().test(KeyState::Shift)) {
             mask |= KeyState::Shift;
+        }
 
         if (key.states().test(KeyState::Ctrl)) {
-            if (c >= FcitxKey_a && c <= FcitxKey_z)
+            if (c >= FcitxKey_a && c <= FcitxKey_z) {
                 c = static_cast<KeySym>(c + FcitxKey_A - FcitxKey_a);
+            }
             mask |= KeyState::Ctrl;
         }
 
@@ -105,7 +107,9 @@ MSymbol KeySymToSymbol(Key key) {
         }
     }
 
-    mask |= key.states() & (KeyState::UsedMask);
+    mask |=
+        key.states() & KeyStates{KeyState::Mod1, KeyState::Mod5, KeyState::Meta,
+                                 KeyState::Super, KeyState::Hyper};
 
     // we have 7 possible below, then 20 is long enough (7 x 2 = 14 < 20)
     char prefix[20] = "";
@@ -169,7 +173,6 @@ inline static void SetPreedit(InputContext *ic, const std::string &s,
 
     if (ic->capabilityFlags().test(CapabilityFlag::Preedit)) {
         ic->inputPanel().setClientPreedit(preedit);
-        ic->updatePreedit();
     } else {
         ic->inputPanel().setPreedit(preedit);
     }
@@ -363,6 +366,16 @@ std::vector<InputMethodEntry> M17NEngine::listInputMethods() {
 
 void M17NEngine::activate(const InputMethodEntry &, InputContextEvent &) {}
 
+void M17NEngine::deactivate(const InputMethodEntry &,
+                            InputContextEvent &event) {
+    auto inputContext = event.inputContext();
+    auto state = inputContext->propertyFor(&factory_);
+    if (event.type() == EventType::InputContextSwitchInputMethod) {
+        state->commitPreedit();
+    }
+    state->reset();
+}
+
 void M17NEngine::keyEvent(const InputMethodEntry &entry, KeyEvent &keyEvent) {
     if (keyEvent.isRelease()) {
         return;
@@ -486,7 +499,9 @@ void M17NState::updateUI() {
         if (!preedit.empty()) {
             SetPreedit(ic_, preedit, mic_->cursor_pos);
         }
+        FCITX_M17N_DEBUG() << "IM preedit changed to " << preedit;
     }
+    ic_->updatePreedit();
 
     if (mic_->status) {
         auto mstatus = MTextToUTF8(mic_->status);
@@ -511,6 +526,20 @@ void M17NState::reset() {
     }
     minput_reset_ic(mic_.get());
     updateUI();
+}
+
+void M17NState::commitPreedit() {
+    if (!mic_) {
+        return;
+    }
+
+    if (!mic_->preedit) {
+        return;
+    }
+    auto preedit = MTextToUTF8(mic_->preedit);
+    if (!preedit.empty()) {
+        ic_->commitString(preedit);
+    }
 }
 
 void M17NState::select(int index) {
