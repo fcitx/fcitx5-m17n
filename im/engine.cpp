@@ -166,7 +166,7 @@ int GetPageSize(MSymbol mlang, MSymbol mname) {
 inline static void SetPreedit(InputContext *ic, const std::string &s,
                               int cursor_pos) {
     Text preedit;
-    preedit.append(s);
+    preedit.append(s, TextFormatFlag::Underline);
     if (cursor_pos >= 0 && utf8::length(s) >= static_cast<size_t>(cursor_pos)) {
         preedit.setCursor(utf8::ncharByteLength(s.begin(), cursor_pos));
     }
