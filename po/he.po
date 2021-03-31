@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2021-01-15 20:24+0000\n"
+"POT-Creation-Date: 2021-03-31 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
 "Last-Translator: Omer I.S. <omeritzicschwartz@gmail.com>, 2021\n"
 "Language-Team: Hebrew (https://www.transifex.com/fcitx/teams/12005/he/)\n"
@@ -44,11 +44,11 @@ msgstr ""
 msgid "Keyboard"
 msgstr "מקלדת"
 
-#: im/m17n.conf.in:3
+#: im/m17n.conf.in.in:3
 msgid "M17N"
 msgstr ""
 
-#: im/m17n.conf.in:4
+#: im/m17n.conf.in.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr ""
 
@@ -62,7 +62,7 @@ msgstr ""
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
-msgstr "פִּנְיִין"
+msgstr "פיניין"
 
 #. remember to update "default" in the same directory.
 #: im/i18nname.cpp:13
@@ -81,6 +81,6 @@ msgstr ""
 msgid "Tone Pinyin"
 msgstr ""
 
-#: im/engine.cpp:334
+#: im/engine.cpp:337
 msgid "{0} (M17N)"
 msgstr ""
