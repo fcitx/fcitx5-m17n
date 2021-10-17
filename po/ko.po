@@ -4,15 +4,15 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
-# Bon Keun Seo <scobyseo@gmail.com>, 2017
+# Bon Keun Seo <scobyseo@gmail.com>, 2021
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"POT-Creation-Date: 2021-10-17 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
-"Last-Translator: Bon Keun Seo <scobyseo@gmail.com>, 2017\n"
+"Last-Translator: Bon Keun Seo <scobyseo@gmail.com>, 2021\n"
 "Language-Team: Korean (https://www.transifex.com/fcitx/teams/12005/ko/)\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
@@ -44,21 +44,21 @@ msgstr "한자"
 msgid "Keyboard"
 msgstr "키보드"
 
-#: im/m17n.conf.in:3
+#: im/m17n.conf.in.in:3
 msgid "M17N"
 msgstr "M17N"
 
-#: im/m17n.conf.in:4
+#: im/m17n.conf.in.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr "Fcitx를 위한 M17N 입력기"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:8
 msgid "M17N Input method"
-msgstr ""
+msgstr "M17N 입력기"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
-msgstr ""
+msgstr "Fcitx 5용 M17N"
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
@@ -81,6 +81,6 @@ msgstr "로마자"
 msgid "Tone Pinyin"
 msgstr "음조 병음"
 
-#: im/engine.cpp:334
+#: im/engine.cpp:337
 msgid "{0} (M17N)"
 msgstr "{0} (M17N)"
