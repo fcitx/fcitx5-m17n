@@ -4,14 +4,15 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
+# abc Def <hdogan1974@gmail.com>, 2021
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"POT-Creation-Date: 2021-11-02 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
-"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Last-Translator: abc Def <hdogan1974@gmail.com>, 2021\n"
 "Language-Team: Turkish (https://www.transifex.com/fcitx/teams/12005/tr/)\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +34,7 @@ msgstr "Çiğneme Sembolü"
 
 #: im/engine.h:23
 msgid "Enable Deprecated"
-msgstr ""
+msgstr "Kullanımdan Kaldırmayı Etkinleştir"
 
 #: im/i18nname.cpp:15
 msgid "Hanja"
@@ -43,21 +44,21 @@ msgstr "Hanja"
 msgid "Keyboard"
 msgstr "Klavye"
 
-#: im/m17n.conf.in:3
+#: im/m17n.conf.in.in:3
 msgid "M17N"
 msgstr "M17N"
 
-#: im/m17n.conf.in:4
+#: im/m17n.conf.in.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr "Fcitx için M17N IM Desteği"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:8
 msgid "M17N Input method"
-msgstr ""
+msgstr "M17N Giriş yöntemi"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
-msgstr ""
+msgstr "Fcitx 5 için M17N"
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
@@ -80,6 +81,6 @@ msgstr "Romaja"
 msgid "Tone Pinyin"
 msgstr "Pinyin Tonu"
 
-#: im/engine.cpp:334
+#: im/engine.cpp:337
 msgid "{0} (M17N)"
-msgstr ""
+msgstr "{0} (M17N)"
