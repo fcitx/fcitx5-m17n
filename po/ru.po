@@ -4,14 +4,15 @@
 #
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
+# Dmitry <dmitrydmitry761@gmail.com>, 2022
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"POT-Creation-Date: 2022-01-15 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
-"Last-Translator: csslayer <wengxt@gmail.com>, 2017\n"
+"Last-Translator: Dmitry <dmitrydmitry761@gmail.com>, 2022\n"
 "Language-Team: Russian (https://www.transifex.com/fcitx/teams/12005/ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +36,7 @@ msgstr "Символ чжуинь"
 
 #: im/engine.h:23
 msgid "Enable Deprecated"
-msgstr ""
+msgstr "Включить устаревший метод ввода"
 
 #: im/i18nname.cpp:15
 msgid "Hanja"
@@ -45,21 +46,21 @@ msgstr "Hanja"
 msgid "Keyboard"
 msgstr "Клавиатура"
 
-#: im/m17n.conf.in:3
+#: im/m17n.conf.in.in:3
 msgid "M17N"
 msgstr "M17N"
 
-#: im/m17n.conf.in:4
+#: im/m17n.conf.in.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr "Поддержка M17N IM в Fcitx"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:8
 msgid "M17N Input method"
-msgstr ""
+msgstr "Метод ввода M17N"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
-msgstr ""
+msgstr "M17N для Fcitx 5"
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
@@ -82,6 +83,6 @@ msgstr "Romaja"
 msgid "Tone Pinyin"
 msgstr "Тон пиньинь"
 
-#: im/engine.cpp:334
+#: im/engine.cpp:337
 msgid "{0} (M17N)"
-msgstr ""
+msgstr "{0} (M17N)"
