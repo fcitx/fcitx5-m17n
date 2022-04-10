@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2022-04-09 20:24+0000\n"
+"POT-Creation-Date: 2022-04-10 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
 "Last-Translator: Junghee Lee <daemul72@gmail.com>, 2022\n"
 "Language-Team: Korean (https://www.transifex.com/fcitx/teams/12005/ko/)\n"
@@ -35,7 +35,7 @@ msgstr "Chewing 기호"
 
 #: im/engine.h:23
 msgid "Enable Deprecated"
-msgstr "낡은 기능 활성화"
+msgstr "더 이상 사용되지 않는 기능 활성화"
 
 #: im/i18nname.cpp:15
 msgid "Hanja"
@@ -59,16 +59,16 @@ msgstr "M17N 입력기"
 
 #: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
-msgstr "Fcitx 5용 M17N"
+msgstr "Fcitx5용 M17N"
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
-msgstr "병음"
+msgstr "Pinyin"
 
 #. remember to update "default" in the same directory.
 #: im/i18nname.cpp:13
 msgid "Pinyin Symbol"
-msgstr "병음 기호"
+msgstr "Pinyin 기호"
 
 #: im/i18nname.cpp:16
 msgid "Quick"
@@ -80,7 +80,7 @@ msgstr "로마자"
 
 #: im/i18nname.cpp:14
 msgid "Tone Pinyin"
-msgstr "음조 병음"
+msgstr "Pinyin 성조"
 
 #: im/engine.cpp:337
 msgid "{0} (M17N)"
