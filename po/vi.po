@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2022-10-25 20:24+0000\n"
+"POT-Creation-Date: 2022-10-26 20:25+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
 "Last-Translator: Zen Fas, 2022\n"
 "Language-Team: Vietnamese (https://www.transifex.com/fcitx/teams/12005/vi/)\n"
@@ -33,7 +33,7 @@ msgstr "Ký tự Chewing"
 
 #: im/engine.h:23
 msgid "Enable Deprecated"
-msgstr "Bật không dùng"
+msgstr "Bật phản đối"
 
 #: im/i18nname.cpp:15
 msgid "Hanja"
@@ -78,7 +78,7 @@ msgstr "Romaja"
 
 #: im/i18nname.cpp:14
 msgid "Tone Pinyin"
-msgstr "Giọng điệu Pinyin"
+msgstr "Âm điệu Pinyin"
 
 #: im/engine.cpp:337
 msgid "{0} (M17N)"
