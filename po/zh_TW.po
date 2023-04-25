@@ -5,15 +5,16 @@
 # Translators:
 # csslayer <wengxt@gmail.com>, 2017
 # 黃柏諺 <s8321414@gmail.com>, 2017
+# Lau YeeYu, 2023
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-11-02 15:55-0800\n"
+"POT-Creation-Date: 2023-04-25 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
-"Last-Translator: 黃柏諺 <s8321414@gmail.com>, 2017\n"
-"Language-Team: Chinese (Taiwan) (https://www.transifex.com/fcitx/teams/12005/"
+"Last-Translator: Lau YeeYu, 2023\n"
+"Language-Team: Chinese (Taiwan) (https://app.transifex.com/fcitx/teams/12005/"
 "zh_TW/)\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -45,21 +46,21 @@ msgstr "漢字"
 msgid "Keyboard"
 msgstr "鍵盤"
 
-#: im/m17n.conf.in:3
+#: im/m17n.conf.in.in:3
 msgid "M17N"
 msgstr "M17N"
 
-#: im/m17n.conf.in:4
+#: im/m17n.conf.in.in:4
 msgid "M17N IM Support For Fcitx"
 msgstr "Fcitx 的 M17N 輸入法支援"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:8
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:8
 msgid "M17N Input method"
-msgstr ""
+msgstr "M17N 輸入法"
 
-#: org.fcitx.fcitx5-m17n.metainfo.xml.in:7
+#: org.fcitx.Fcitx5.Addon.M17N.metainfo.xml.in:7
 msgid "M17N for Fcitx 5"
-msgstr ""
+msgstr "Fcitx 5 的 M17N 支援"
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
@@ -82,6 +83,6 @@ msgstr "羅馬字"
 msgid "Tone Pinyin"
 msgstr "音調拼音"
 
-#: im/engine.cpp:334
+#: im/engine.cpp:337
 msgid "{0} (M17N)"
 msgstr "{0} (M17N)"
