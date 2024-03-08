@@ -6,8 +6,12 @@
   <project_license>LGPL-2.1+</project_license>
   <name>M17N for Fcitx 5</name>
   <summary>M17N Input method</summary>
+  <developer id="org.fcitx-im">
+      <name>The Fcitx Team</name>
+  </developer>
   <url type="homepage">https://fcitx-im.org</url>
   <url type="bugtracker">https://github.com/fcitx/fcitx5-m17n/issues</url>
+  <url type="vcs-browser">https://github.com/fcitx/fcitx5-m17n</url>
   <project_group>Fcitx</project_group>
   <releases>
     <release version="5.1.0" date="2023-08-14"/>
