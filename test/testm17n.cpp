@@ -24,11 +24,21 @@ void scheduleEvent(EventDispatcher *dispatcher, Instance *instance) {
         auto *m17n = instance->addonManager().addon("m17n", true);
         FCITX_ASSERT(m17n);
         auto defaultGroup = instance->inputMethodManager().currentGroup();
+        std::string wijesekaraName;
+        if (instance->inputMethodManager().entry("m17n_si_wijesekera")) {
+            wijesekaraName = "m17n_si_wijesekera";
+        } else if (instance->inputMethodManager().entry("m17n_si_wijesekara")) {
+            wijesekaraName = "m17n_si_wijesekara";
+        } else {
+            FCITX_ERROR()
+                << "wijesekara engine is not available, skip the test";
+            return;
+        }
         defaultGroup.inputMethodList().clear();
         defaultGroup.inputMethodList().push_back(
             InputMethodGroupItem("keyboard-us"));
         defaultGroup.inputMethodList().push_back(
-            InputMethodGroupItem("m17n_si_wijesekera"));
+            InputMethodGroupItem(wijesekaraName));
         defaultGroup.setDefaultInputMethod("");
         instance->inputMethodManager().setGroup(defaultGroup);
         auto *testfrontend = instance->addonManager().addon("testfrontend");
@@ -56,11 +66,10 @@ void scheduleEvent(EventDispatcher *dispatcher, Instance *instance) {
             uuid, Key(FcitxKey_braceright), false);
         testfrontend->call<ITestFrontend::keyEvent>(uuid, Key("Control+space"),
                                                     false);
-
-        dispatcher->schedule([dispatcher, instance]() {
-            dispatcher->detach();
-            instance->exit();
-        });
+    });
+    dispatcher->schedule([dispatcher, instance]() {
+        dispatcher->detach();
+        instance->exit();
     });
 }
 
