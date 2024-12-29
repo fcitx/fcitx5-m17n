@@ -7,18 +7,38 @@
 #include "engine.h"
 #include "keysymname.h"
 #include "overrideparser.h"
+#include <cstddef>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <fcitx-config/iniparser.h>
+#include <fcitx-utils/capabilityflags.h>
+#include <fcitx-utils/cutf8.h>
 #include <fcitx-utils/i18n.h>
+#include <fcitx-utils/key.h>
+#include <fcitx-utils/keysym.h>
 #include <fcitx-utils/log.h>
 #include <fcitx-utils/standardpath.h>
+#include <fcitx-utils/stringutils.h>
+#include <fcitx-utils/textformatflags.h>
 #include <fcitx-utils/utf8.h>
+#include <fcitx/addoninstance.h>
+#include <fcitx/candidatelist.h>
+#include <fcitx/event.h>
 #include <fcitx/inputcontext.h>
 #include <fcitx/inputcontextmanager.h>
 #include <fcitx/inputpanel.h>
 #include <fcitx/instance.h>
+#include <fcitx/text.h>
+#include <fcitx/userinterface.h>
 #include <fcntl.h>
 #include <fmt/format.h>
+#include <m17n-core.h>
 #include <m17n.h>
+#include <memory>
 #include <string>
+#include <utility>
+#include <vector>
 
 FCITX_DEFINE_LOG_CATEGORY(M17N, "m17n")
 
@@ -31,7 +51,8 @@ namespace {
 
 std::string MTextToUTF8(MText *mt) {
     // TODO Verify that bufsize is "just enough" in worst scenerio.
-    size_t bufsize = (mtext_len(mt) + 1) * FCITX_UTF8_MAX_LENGTH;
+    size_t bufsize =
+        (mtext_len(mt) + 1) * static_cast<size_t>(FCITX_UTF8_MAX_LENGTH);
     std::vector<char> buf;
     buf.resize(bufsize);
     FCITX_M17N_DEBUG() << "MText buf size: " << bufsize;
@@ -111,36 +132,35 @@ MSymbol KeySymToSymbol(Key key) {
         key.states() & KeyStates{KeyState::Mod1, KeyState::Mod5, KeyState::Meta,
                                  KeyState::Super, KeyState::Hyper};
 
-    // we have 7 possible below, then 20 is long enough (7 x 2 = 14 < 20)
-    char prefix[20] = "";
+    std::string prefix;
 
     // and we use reverse order here comparing with other implementation since
     // strcat is append.
     // I don't know if it matters, but it's just to make sure it works.
     if (mask & KeyState::Shift) {
-        strcat(prefix, "S-");
+        prefix.append("S-");
     }
     if (mask & KeyState::Ctrl) {
-        strcat(prefix, "C-");
+        prefix.append("C-");
     }
     if (mask & KeyState::Meta) {
-        strcat(prefix, "M-");
+        prefix.append("M-");
     }
     if (mask & KeyState::Alt) {
-        strcat(prefix, "A-");
+        prefix.append("A-");
     }
     // This is mysterious. - xiaq
     if (mask & KeyState::Mod5) {
-        strcat(prefix, "G-");
+        prefix.append("G-");
     }
     if (mask & KeyState::Super) {
-        strcat(prefix, "s-");
+        prefix.append("s-");
     }
     if (mask & KeyState::Hyper) {
-        strcat(prefix, "H-");
+        prefix.append("H-");
     }
 
-    std::string keystr = stringutils::concat(static_cast<char *>(prefix), base);
+    std::string keystr = stringutils::concat(prefix, base);
     FCITX_M17N_DEBUG() << "M17n key str: " << keystr << " " << key;
     mkeysym = msymbol(keystr.data());
 
@@ -154,17 +174,14 @@ int GetPageSize(MSymbol mlang, MSymbol mname) {
         if (mlang == Mt && mname == Mnil) {
             // XXX magic number
             return 10;
-        } else {
-            // tail recursion
-            return GetPageSize(Mt, Mnil);
-        }
+        } // tail recursion
+        return GetPageSize(Mt, Mnil);
     }
     MPlist *varinfo = (MPlist *)mplist_value(plist);
     return reinterpret_cast<intptr_t>(MPListIndex(varinfo, 3));
 }
 
-inline static void SetPreedit(InputContext *ic, const std::string &s,
-                              int cursor_pos) {
+inline void SetPreedit(InputContext *ic, const std::string &s, int cursor_pos) {
     Text preedit;
     preedit.append(s, TextFormatFlag::Underline);
     if (cursor_pos >= 0 && utf8::length(s) >= static_cast<size_t>(cursor_pos)) {
@@ -185,7 +202,7 @@ public:
     }
 
     void select(InputContext *inputContext) const override {
-        auto state = inputContext->propertyFor(engine_->factory());
+        auto *state = inputContext->propertyFor(engine_->factory());
         state->select(index_);
     }
 
@@ -198,7 +215,7 @@ class M17NCandidateList : public CommonCandidateList {
 public:
     M17NCandidateList(M17NEngine *engine, InputContext *ic)
         : engine_(engine), ic_(ic) {
-        auto state = ic_->propertyFor(engine_->factory());
+        auto *state = ic_->propertyFor(engine_->factory());
         auto pageSize = GetPageSize(state->mim_->language, state->mim_->name);
 
         const static KeyList selectionKeys{
@@ -244,24 +261,24 @@ public:
     }
 
     void prev() override {
-        auto state = ic_->propertyFor(engine_->factory());
+        auto *state = ic_->propertyFor(engine_->factory());
         state->keyEvent(Key(FcitxKey_Up));
     }
 
     void next() override {
-        auto state = ic_->propertyFor(engine_->factory());
+        auto *state = ic_->propertyFor(engine_->factory());
         state->keyEvent(Key(FcitxKey_Down));
     }
 
     bool usedNextBefore() const override { return true; }
 
     void prevCandidate() override {
-        auto state = ic_->propertyFor(engine_->factory());
+        auto *state = ic_->propertyFor(engine_->factory());
         state->keyEvent(Key(FcitxKey_Left));
     }
 
     void nextCandidate() override {
-        auto state = ic_->propertyFor(engine_->factory());
+        auto *state = ic_->propertyFor(engine_->factory());
         state->keyEvent(Key(FcitxKey_Right));
     }
 
@@ -310,8 +327,9 @@ std::vector<InputMethodEntry> M17NEngine::listInputMethods() {
             item = MatchDefaultSettings(list_, lang, name);
         }
 
-        if (item && item->priority < 0 && !*config_.enableDeprecated)
+        if (item && item->priority < 0 && !*config_.enableDeprecated) {
             continue;
+        }
 
         if (msane != Mt) {
             // Not "sane"
@@ -364,12 +382,13 @@ std::vector<InputMethodEntry> M17NEngine::listInputMethods() {
     return entries;
 }
 
-void M17NEngine::activate(const InputMethodEntry &, InputContextEvent &) {}
+void M17NEngine::activate(const InputMethodEntry & /*entry*/,
+                          InputContextEvent & /*event*/) {}
 
-void M17NEngine::deactivate(const InputMethodEntry &,
+void M17NEngine::deactivate(const InputMethodEntry & /*entry*/,
                             InputContextEvent &event) {
-    auto inputContext = event.inputContext();
-    auto state = inputContext->propertyFor(&factory_);
+    auto *inputContext = event.inputContext();
+    auto *state = inputContext->propertyFor(&factory_);
     if (event.type() == EventType::InputContextSwitchInputMethod) {
         state->commitPreedit();
     }
@@ -381,15 +400,16 @@ void M17NEngine::keyEvent(const InputMethodEntry &entry, KeyEvent &keyEvent) {
         return;
     }
 
-    auto ic = keyEvent.inputContext();
-    auto state = ic->propertyFor(&factory_);
+    auto *ic = keyEvent.inputContext();
+    auto *state = ic->propertyFor(&factory_);
 
     state->keyEvent(entry, keyEvent);
 }
 
-void M17NEngine::reset(const InputMethodEntry &, InputContextEvent &event) {
-    auto ic = event.inputContext();
-    auto state = ic->propertyFor(&factory_);
+void M17NEngine::reset(const InputMethodEntry & /*entry*/,
+                       InputContextEvent &event) {
+    auto *ic = event.inputContext();
+    auto *state = ic->propertyFor(&factory_);
     state->reset();
 }
 
@@ -400,7 +420,7 @@ void M17NState::callback(MInputContext *context, MSymbol command) {
     state->command(context, command);
 }
 
-void M17NState::command(MInputContext *context, MSymbol command) {
+void M17NState::command(MInputContext *context, MSymbol command) const {
     if (command == Minput_get_surrounding_text &&
         ic_->capabilityFlags().test(CapabilityFlag::SurroundingText) &&
         ic_->surroundingText().isValid()) {
@@ -408,23 +428,27 @@ void M17NState::command(MInputContext *context, MSymbol command) {
         size_t nchars = utf8::length(text);
         size_t nbytes = text.size();
         MText *mt = mconv_decode_buffer(
-                  Mcoding_utf_8,
-                  reinterpret_cast<const unsigned char *>(text.data()), nbytes),
-              *surround = nullptr;
-        if (!mt)
+            Mcoding_utf_8, reinterpret_cast<const unsigned char *>(text.data()),
+            nbytes);
+        MText *surround = nullptr;
+        if (!mt) {
             return;
+        }
 
-        long len = (long)mplist_value(context->plist), pos;
+        long len = (long)mplist_value(context->plist);
+        long pos;
         auto cursor = ic_->surroundingText().cursor();
         if (len < 0) {
             pos = cursor + len;
-            if (pos < 0)
+            if (pos < 0) {
                 pos = 0;
+            }
             surround = mtext_duplicate(mt, pos, cursor);
         } else if (len > 0) {
             pos = cursor + len;
-            if (pos > static_cast<long>(nchars))
+            if (pos > static_cast<long>(nchars)) {
                 pos = nchars;
+            }
             surround = mtext_duplicate(mt, cursor, pos);
         } else {
             surround = mtext();
@@ -446,7 +470,7 @@ void M17NState::command(MInputContext *context, MSymbol command) {
 }
 
 void M17NState::keyEvent(const InputMethodEntry &entry, KeyEvent &keyEvent) {
-    auto data = static_cast<const M17NData *>(entry.userData());
+    const auto *data = static_cast<const M17NData *>(entry.userData());
     if (!mim_ || data->language() != mim_->language ||
         data->name() != mim_->name) {
         mic_.reset();
@@ -528,7 +552,7 @@ void M17NState::reset() {
     updateUI();
 }
 
-void M17NState::commitPreedit() {
+void M17NState::commitPreedit() const {
     if (!mic_) {
         return;
     }
@@ -558,14 +582,16 @@ void M17NState::select(int index) {
             keyEvent(Key(FcitxKey_Left));
         }
         /* though useless, but take care if there is a bug cause freeze */
-        if (lastIdx == mic_->candidate_index)
+        if (lastIdx == mic_->candidate_index) {
             break;
+        }
         lastIdx = mic_->candidate_index;
     } while (mic_->candidate_list && mic_->candidate_show);
 
     if (!mic_->candidate_list || !mic_->candidate_show ||
-        index != mic_->candidate_index)
+        index != mic_->candidate_index) {
         return;
+    }
 
     MPlist *head = mic_->candidate_list;
 
@@ -589,10 +615,11 @@ void M17NState::select(int index) {
     int delta = index - i;
 
     KeySym sym = FcitxKey_1;
-    if ((delta + 1) % 10 == 0)
+    if ((delta + 1) % 10 == 0) {
         sym = FcitxKey_0;
-    else
+    } else {
         sym = static_cast<KeySym>(FcitxKey_1 + (delta % 10));
+    }
     keyEvent(Key(sym));
 }
 } // namespace fcitx

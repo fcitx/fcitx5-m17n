@@ -5,24 +5,32 @@
  *
  */
 #include "overrideparser.h"
+#include <algorithm>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
 #include <fcitx-utils/stringutils.h>
+#include <string>
+#include <vector>
 
 using namespace fcitx;
 
 std::vector<OverrideItem> ParseDefaultSettings(FILE *fp) {
-    char *buf = NULL;
+    char *buf = nullptr;
     size_t bufsize = 0;
     std::vector<OverrideItem> list;
     while (getline(&buf, &bufsize, fp) != -1) {
         /* ignore comments */
-        if (!buf || buf[0] == '#')
+        if (!buf || buf[0] == '#') {
             continue;
+        }
         auto trimmed = stringutils::trim(buf);
         auto strList = stringutils::split(trimmed, ":");
 
         do {
-            if (strList.size() < 3)
+            if (strList.size() < 3) {
                 break;
+            }
             const auto &lang = strList[0];
             const auto &name = strList[1];
             const auto &sPriority = strList[2];
@@ -36,11 +44,13 @@ std::vector<OverrideItem> ParseDefaultSettings(FILE *fp) {
             item.i18nName = strList.size() == 4 ? strList[3] : "";
             item.wildcardCount = 0;
 
-            if (item.name[0] == '*')
+            if (item.name[0] == '*') {
                 item.wildcardCount |= 1;
+            }
 
-            if (item.lang[0] == '*')
+            if (item.lang[0] == '*') {
                 item.wildcardCount |= 2;
+            }
         } while (0);
     }
     free(buf);
@@ -56,11 +66,13 @@ std::vector<OverrideItem> ParseDefaultSettings(FILE *fp) {
 const OverrideItem *MatchDefaultSettings(const std::vector<OverrideItem> &list,
                                          const std::string &lang,
                                          const std::string &name) {
-    for (auto &item : list) {
-        if (!((item.wildcardCount & 2) || lang == item.lang))
+    for (const auto &item : list) {
+        if (!((item.wildcardCount & 2) || lang == item.lang)) {
             continue;
-        if (!((item.wildcardCount & 1) || name == item.name))
+        }
+        if (!((item.wildcardCount & 1) || name == item.name)) {
             continue;
+        }
         return &item;
     }
     return nullptr;

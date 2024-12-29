@@ -8,13 +8,23 @@
 #define _IM_ENGINE_H_
 
 #include "overrideparser.h"
+#include <fcitx-config/configuration.h>
 #include <fcitx-config/iniparser.h>
+#include <fcitx-config/option.h>
+#include <fcitx-config/rawconfig.h>
 #include <fcitx-utils/i18n.h>
+#include <fcitx-utils/key.h>
 #include <fcitx/addonfactory.h>
+#include <fcitx/addoninstance.h>
 #include <fcitx/addonmanager.h>
+#include <fcitx/event.h>
 #include <fcitx/inputcontextproperty.h>
 #include <fcitx/inputmethodengine.h>
+#include <fcitx/inputmethodentry.h>
+#include <m17n-core.h>
 #include <m17n.h>
+#include <memory>
+#include <vector>
 
 namespace fcitx {
 
@@ -44,11 +54,11 @@ public:
           mic_(nullptr, &minput_destroy_ic) {}
 
     void keyEvent(const InputMethodEntry &entry, KeyEvent &keyEvent);
-    void command(MInputContext *context, MSymbol command);
+    void command(MInputContext *context, MSymbol command) const;
     void updateUI();
     void select(int index);
     void reset();
-    void commitPreedit();
+    void commitPreedit() const;
     bool keyEvent(const Key &key);
 
     static void callback(MInputContext *context, MSymbol command);
@@ -63,15 +73,15 @@ class M17NEngine : public InputMethodEngine {
 public:
     M17NEngine(Instance *instance);
 
-    void activate(const fcitx::InputMethodEntry &,
-                  fcitx::InputContextEvent &) override;
+    void activate(const fcitx::InputMethodEntry & /*entry*/,
+                  fcitx::InputContextEvent & /*event*/) override;
     void deactivate(const fcitx::InputMethodEntry &entry,
                     fcitx::InputContextEvent &event) override;
     void keyEvent(const fcitx::InputMethodEntry &entry,
                   fcitx::KeyEvent &keyEvent) override;
     void reloadConfig() override;
-    void reset(const fcitx::InputMethodEntry &,
-               fcitx::InputContextEvent &) override;
+    void reset(const fcitx::InputMethodEntry & /*entry*/,
+               fcitx::InputContextEvent & /*event*/) override;
     auto factory() { return &factory_; }
 
     const Configuration *getConfig() const override { return &config_; }

@@ -8,6 +8,7 @@
 #define _IM_KEYSYMNAME_H_
 
 #include <fcitx-utils/key.h>
+#include <string>
 
 namespace fcitx {
 

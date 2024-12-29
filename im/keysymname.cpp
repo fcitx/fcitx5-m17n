@@ -6,6 +6,10 @@
  */
 
 #include "keysymname.h"
+#include <cstdio>
+#include <fcitx-utils/key.h>
+#include <fcitx-utils/keysym.h>
+#include <string>
 
 namespace fcitx {
 std::string KeySymName(KeySym keyval) {

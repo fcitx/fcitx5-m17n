@@ -7,20 +7,23 @@
 #include "testdir.h"
 #include "testfrontend_public.h"
 #include <fcitx-utils/eventdispatcher.h>
+#include <fcitx-utils/key.h>
+#include <fcitx-utils/keysymgen.h>
 #include <fcitx-utils/log.h>
+#include <fcitx-utils/macros.h>
 #include <fcitx-utils/standardpath.h>
 #include <fcitx-utils/testing.h>
 #include <fcitx/addonmanager.h>
 #include <fcitx/inputcontextmanager.h>
+#include <fcitx/inputmethodgroup.h>
 #include <fcitx/inputmethodmanager.h>
 #include <fcitx/instance.h>
-#include <iostream>
-#include <thread>
+#include <string>
 
 using namespace fcitx;
 
-void scheduleEvent(EventDispatcher *dispatcher, Instance *instance) {
-    dispatcher->schedule([dispatcher, instance]() {
+void scheduleEvent(Instance *instance) {
+    instance->eventDispatcher().schedule([instance]() {
         auto *m17n = instance->addonManager().addon("m17n", true);
         FCITX_ASSERT(m17n);
         auto defaultGroup = instance->inputMethodManager().currentGroup();
@@ -67,10 +70,6 @@ void scheduleEvent(EventDispatcher *dispatcher, Instance *instance) {
         testfrontend->call<ITestFrontend::keyEvent>(uuid, Key("Control+space"),
                                                     false);
     });
-    dispatcher->schedule([dispatcher, instance]() {
-        dispatcher->detach();
-        instance->exit();
-    });
 }
 
 void runInstance() {}
@@ -86,11 +85,9 @@ int main() {
     fcitx::Log::setLogRule("default=5,m17n=5");
     Instance instance(FCITX_ARRAY_SIZE(argv), argv);
     instance.addonManager().registerDefaultLoader(nullptr);
-    EventDispatcher dispatcher;
-    dispatcher.attach(&instance.eventLoop());
-    std::thread thread(scheduleEvent, &dispatcher, &instance);
+    scheduleEvent(&instance);
+    instance.eventDispatcher().schedule([&instance]() { instance.exit(); });
     instance.exec();
-    thread.join();
 
     return 0;
 }

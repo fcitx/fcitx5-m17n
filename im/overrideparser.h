@@ -7,6 +7,7 @@
 #ifndef _IM_OVERRIDEPARSER_H_
 #define _IM_OVERRIDEPARSER_H_
 
+#include <cstdio>
 #include <string>
 #include <vector>
 
