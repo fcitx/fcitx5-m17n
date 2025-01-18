@@ -624,4 +624,4 @@ void M17NState::select(int index) {
 }
 } // namespace fcitx
 
-FCITX_ADDON_FACTORY(fcitx::M17NEngineFactory)
+FCITX_ADDON_FACTORY_V2(m17n, fcitx::M17NEngineFactory)

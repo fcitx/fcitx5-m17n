@@ -7,3 +7,6 @@ Enabled=True
 Library=m17n
 Type=SharedLibrary
 Configurable=True
+
+[Addon/Dependencies]
+0=core:@REQUIRED_FCITX_VERSION@
