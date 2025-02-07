@@ -19,7 +19,7 @@ struct OverrideItem {
     int wildcardCount;
 };
 
-std::vector<OverrideItem> ParseDefaultSettings(FILE *fp);
+std::vector<OverrideItem> ParseDefaultSettings(int fd);
 const OverrideItem *MatchDefaultSettings(const std::vector<OverrideItem> &list,
                                          const std::string &lang,
                                          const std::string &name);

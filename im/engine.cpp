@@ -297,11 +297,8 @@ M17NEngine::M17NEngine(Instance *instance)
 
     auto file = StandardPath::global().open(StandardPath::Type::PkgData,
                                             "m17n/default", O_RDONLY);
-    FILE *fp = fdopen(file.fd(), "r");
-    if (fp) {
-        file.release();
-        list_ = ParseDefaultSettings(fp);
-        fclose(fp);
+    if (file.isValid()) {
+        list_ = ParseDefaultSettings(file.fd());
     }
 
     instance_->inputContextManager().registerProperty("m17nState", &factory_);

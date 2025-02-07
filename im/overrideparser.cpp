@@ -9,22 +9,26 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+#include <fcitx-utils/fdstreambuf.h>
 #include <fcitx-utils/stringutils.h>
+#include <istream>
 #include <string>
 #include <vector>
 
 using namespace fcitx;
 
-std::vector<OverrideItem> ParseDefaultSettings(FILE *fp) {
-    char *buf = nullptr;
-    size_t bufsize = 0;
+std::vector<OverrideItem> ParseDefaultSettings(int fd) {
     std::vector<OverrideItem> list;
-    while (getline(&buf, &bufsize, fp) != -1) {
+
+    IFDStreamBuf buf(fd);
+    std::istream in(&buf);
+    std::string line;
+    while (std::getline(in, line)) {
         /* ignore comments */
-        if (!buf || buf[0] == '#') {
+        if (!line.empty() || line[0] == '#') {
             continue;
         }
-        auto trimmed = stringutils::trim(buf);
+        const auto trimmed = stringutils::trimView(line);
         auto strList = stringutils::split(trimmed, ":");
 
         do {
@@ -53,7 +57,6 @@ std::vector<OverrideItem> ParseDefaultSettings(FILE *fp) {
             }
         } while (0);
     }
-    free(buf);
 
     std::stable_sort(list.begin(), list.end(),
                      [](const auto &lhs, const auto &rhs) {
