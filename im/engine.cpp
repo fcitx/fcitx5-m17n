@@ -32,7 +32,7 @@
 #include <fcitx/text.h>
 #include <fcitx/userinterface.h>
 #include <fcntl.h>
-#include <fmt/format.h>
+#include <format>
 #include <m17n-core.h>
 #include <m17n.h>
 #include <memory>
@@ -348,9 +348,10 @@ std::vector<InputMethodEntry> M17NEngine::listInputMethods() {
 
         std::string iconName;
         auto uniqueName = stringutils::concat("m17n_", lang, "_", name);
-        auto fxName = fmt::format(
-            _("{0} (M17N)"),
-            (item && item->i18nName.size()) ? _(item->i18nName) : name);
+        const std::string i18nname =
+            (item && item->i18nName.size()) ? _(item->i18nName) : name;
+        auto fxName =
+            std::vformat(_("{0} (M17N)"), std::make_format_args(i18nname));
 
         info = minput_get_title_icon(mlang, mname);
         // head of info is a MText

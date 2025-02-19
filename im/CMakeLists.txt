@@ -5,7 +5,7 @@ set(fcitx_m17n_sources
     )
 
 add_fcitx5_addon(m17n ${fcitx_m17n_sources})
-target_link_libraries(m17n Fcitx5::Core Fcitx5::Config ${FMT_TARGET} PkgConfig::M17NGui)
+target_link_libraries(m17n Fcitx5::Core Fcitx5::Config PkgConfig::M17NGui)
 target_include_directories(m17n PRIVATE ${PROJECT_BINARY_DIR})
 set_target_properties(m17n PROPERTIES PREFIX "")
 install(TARGETS m17n DESTINATION "${CMAKE_INSTALL_LIBDIR}/fcitx5")

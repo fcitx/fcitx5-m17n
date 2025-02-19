@@ -16,17 +16,10 @@ set(GCOV_TOOL "gcov" CACHE STRING "Path to gcov tool used by coverage.")
 find_package(Fcitx5Core ${REQUIRED_FCITX_VERSION} REQUIRED)
 find_package(Fcitx5Module REQUIRED COMPONENTS TestFrontend)
 find_package(Gettext REQUIRED)
-find_package(fmt REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(M17NGui IMPORTED_TARGET "m17n-gui>=1.6.3" REQUIRED)
 # Required for data and testing
 pkg_check_modules(M17NDB "m17n-db" REQUIRED)
-
-if (TARGET fmt::fmt-header-only)
-  set(FMT_TARGET fmt::fmt-header-only)
-else()
-  set(FMT_TARGET fmt::fmt)
-endif ()
 
 include("${FCITX_INSTALL_CMAKECONFIG_DIR}/Fcitx5Utils/Fcitx5CompilerSettings.cmake")
 add_definitions(-DFCITX_GETTEXT_DOMAIN=\"fcitx5-m17n\" -D_GNU_SOURCE)
