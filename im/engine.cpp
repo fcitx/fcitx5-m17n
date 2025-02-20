@@ -350,8 +350,7 @@ std::vector<InputMethodEntry> M17NEngine::listInputMethods() {
         auto uniqueName = stringutils::concat("m17n_", lang, "_", name);
         const std::string i18nname =
             (item && item->i18nName.size()) ? _(item->i18nName) : name;
-        auto fxName =
-            std::vformat(_("{0} (M17N)"), std::make_format_args(i18nname));
+        auto fxName = _("{0} (M17N)", i18nname);
 
         info = minput_get_title_icon(mlang, mname);
         // head of info is a MText
