@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the fcitx5-m17n package.
 #
 # Translators:
-# Zen Fas, 2022
+# zenfas, 2022
+# Huy Võ <hoanghuy309@gmail.com>, 2025
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fcitx5-m17n\n"
 "Report-Msgid-Bugs-To: fcitx-dev@googlegroups.com\n"
-"POT-Creation-Date: 2022-10-26 20:25+0000\n"
+"POT-Creation-Date: 2025-03-12 20:24+0000\n"
 "PO-Revision-Date: 2017-12-21 01:32+0000\n"
-"Last-Translator: Zen Fas, 2022\n"
-"Language-Team: Vietnamese (https://www.transifex.com/fcitx/teams/12005/vi/)\n"
+"Last-Translator: Huy Võ <hoanghuy309@gmail.com>, 2025\n"
+"Language-Team: Vietnamese (https://app.transifex.com/fcitx/teams/12005/vi/)\n"
 "Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +32,7 @@ msgstr "Cangjie"
 msgid "Chewing Symbol"
 msgstr "Ký tự Chewing"
 
-#: im/engine.h:23
+#: im/engine.h:33
 msgid "Enable Deprecated"
 msgstr "Bật phản đối"
 
@@ -43,11 +44,11 @@ msgstr "Hanja"
 msgid "Keyboard"
 msgstr "Bàn phím"
 
-#: im/m17n.conf.in.in:3
+#: im/m17n.conf.in.in:2
 msgid "M17N"
 msgstr "M17N"
 
-#: im/m17n.conf.in.in:4
+#: im/m17n.conf.in.in:3
 msgid "M17N IM Support For Fcitx"
 msgstr "Bộ gõ M17N hỗ trợ cho Fcitx"
 
@@ -61,12 +62,12 @@ msgstr "M17N cho Fcitx 5"
 
 #: im/i18nname.cpp:14
 msgid "Pinyin"
-msgstr "Pinyin"
+msgstr "Bính âm"
 
 #. remember to update "default" in the same directory.
 #: im/i18nname.cpp:13
 msgid "Pinyin Symbol"
-msgstr "Ký tự Pinyin"
+msgstr "Ký tự Bính âm"
 
 #: im/i18nname.cpp:16
 msgid "Quick"
@@ -80,6 +81,7 @@ msgstr "Romaja"
 msgid "Tone Pinyin"
 msgstr "Âm điệu Pinyin"
 
-#: im/engine.cpp:337
+#: im/engine.cpp:353
+#, c++-format
 msgid "{0} (M17N)"
 msgstr "{0} (M17N)"
