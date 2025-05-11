@@ -17,9 +17,13 @@ find_package(Fcitx5Core ${REQUIRED_FCITX_VERSION} REQUIRED)
 find_package(Fcitx5Module REQUIRED COMPONENTS TestFrontend)
 find_package(Gettext REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(M17NGui IMPORTED_TARGET "m17n-gui>=1.6.3" REQUIRED)
-# Required for data and testing
-pkg_check_modules(M17NDB "m17n-db" REQUIRED)
+
+if (NOT DEFINED M17N_TARGET)
+    pkg_check_modules(M17NGui IMPORTED_TARGET "m17n-gui>=1.6.3" REQUIRED)
+    # Required for data and testing
+    pkg_check_modules(M17NDB "m17n-db" REQUIRED)
+    set(M17N_TARGET PkgConfig::M17NGui)
+endif()
 
 include("${FCITX_INSTALL_CMAKECONFIG_DIR}/Fcitx5Utils/Fcitx5CompilerSettings.cmake")
 add_definitions(-DFCITX_GETTEXT_DOMAIN=\"fcitx5-m17n\" -D_GNU_SOURCE)

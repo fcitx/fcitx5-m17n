@@ -4,7 +4,7 @@ Comment=M17N IM Support For Fcitx
 Category=InputMethod
 Version=@PROJECT_VERSION@
 Enabled=True
-Library=m17n
+Library=libm17n
 Type=SharedLibrary
 Configurable=True
 
