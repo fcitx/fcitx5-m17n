@@ -11,7 +11,6 @@
 #include <fcitx-utils/keysym.h>
 #include <fcitx-utils/log.h>
 #include <fcitx-utils/macros.h>
-#include <fcitx-utils/standardpath.h>
 #include <fcitx-utils/testing.h>
 #include <fcitx/addonmanager.h>
 #include <fcitx/inputcontextmanager.h>
@@ -75,7 +74,7 @@ void scheduleEvent(Instance *instance) {
 void runInstance() {}
 
 int main() {
-    setupTestingEnvironment(TESTING_BINARY_DIR, {TESTING_BINARY_DIR "/im"},
+    setupTestingEnvironment(TESTING_BINARY_DIR, {"bin"},
                             {TESTING_BINARY_DIR "/test"});
     // fcitx::Log::setLogRule("default=5,table=5,libime-table=5");
     char arg0[] = "testm17n";

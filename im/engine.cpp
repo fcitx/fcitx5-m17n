@@ -18,7 +18,7 @@
 #include <fcitx-utils/key.h>
 #include <fcitx-utils/keysym.h>
 #include <fcitx-utils/log.h>
-#include <fcitx-utils/standardpath.h>
+#include <fcitx-utils/standardpaths.h>
 #include <fcitx-utils/stringutils.h>
 #include <fcitx-utils/textformatflags.h>
 #include <fcitx-utils/utf8.h>
@@ -295,8 +295,8 @@ M17NEngine::M17NEngine(Instance *instance)
     reloadConfig();
     M17N_INIT();
 
-    auto file = StandardPath::global().open(StandardPath::Type::PkgData,
-                                            "m17n/default", O_RDONLY);
+    auto file = StandardPaths::global().open(StandardPathsType::PkgData,
+                                             "m17n/default");
     if (file.isValid()) {
         list_ = ParseDefaultSettings(file.fd());
     }
