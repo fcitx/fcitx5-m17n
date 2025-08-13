@@ -370,7 +370,7 @@ std::vector<InputMethodEntry> M17NEngine::listInputMethods() {
         m17n_object_unref(info);
 
         InputMethodEntry entry(uniqueName, fxName,
-                               (strcmp(lang, "t") == 0 ? "*" : lang), "m17n");
+                               (strcmp(lang, "t") == 0 ? "mul" : lang), "m17n");
         entry.setConfigurable(true).setIcon(iconName);
         entry.setUserData(std::make_unique<M17NData>(mlang, mname));
         entries.emplace_back(std::move(entry));
