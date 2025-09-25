@@ -58,10 +58,16 @@ public:
     void updateUI();
     void select(int index);
     void reset();
-    void commitPreedit() const;
+    void commitPreedit();
     bool keyEvent(const Key &key);
 
     static void callback(MInputContext *context, MSymbol command);
+
+    MInputMethod *mim() const { return mim_.get(); }
+    MInputContext *mic() const { return mic_.get(); }
+
+private:
+    bool handleKey(MSymbol key);
 
     M17NEngine *engine_;
     InputContext *ic_;

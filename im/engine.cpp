@@ -216,7 +216,7 @@ public:
     M17NCandidateList(M17NEngine *engine, InputContext *ic)
         : engine_(engine), ic_(ic) {
         auto *state = ic_->propertyFor(engine_->factory());
-        auto pageSize = GetPageSize(state->mim_->language, state->mim_->name);
+        auto pageSize = GetPageSize(state->mim()->language, state->mim()->name);
 
         const static KeyList selectionKeys{
             Key(FcitxKey_1), Key(FcitxKey_2), Key(FcitxKey_3), Key(FcitxKey_4),
@@ -224,7 +224,7 @@ public:
             Key(FcitxKey_9), Key(FcitxKey_0)};
         setPageSize(pageSize);
         setSelectionKey(selectionKeys);
-        MPlist *head = state->mic_->candidate_list;
+        MPlist *head = state->mic()->candidate_list;
         int index = 0;
         for (; head && mplist_key(head) != Mnil; head = mplist_next(head)) {
             MSymbol key = mplist_key(head);
@@ -253,10 +253,10 @@ public:
                 FCITX_M17N_DEBUG() << "Invalid MSymbol: " << msymbol_name(key);
             }
         }
-        if (state->mic_->candidate_index >= 0 &&
-            state->mic_->candidate_index < totalSize()) {
-            setGlobalCursorIndex(state->mic_->candidate_index);
-            setPage(state->mic_->candidate_index / pageSize);
+        if (state->mic()->candidate_index >= 0 &&
+            state->mic()->candidate_index < totalSize()) {
+            setGlobalCursorIndex(state->mic()->candidate_index);
+            setPage(state->mic()->candidate_index / pageSize);
         }
     }
 
@@ -495,12 +495,19 @@ bool M17NState::keyEvent(const Key &key) {
         FCITX_M17N_DEBUG() << key << " not my dish";
         return false;
     }
+    return handleKey(msym);
+}
+
+bool M17NState::handleKey(MSymbol key) {
+    if (!mic_) {
+        return false;
+    }
     int thru = 0;
-    if (!minput_filter(mic_.get(), msym, nullptr)) {
+    if (!minput_filter(mic_.get(), key, nullptr)) {
         MText *produced = mtext();
         // If input symbol was let through by m17n, let Fcitx handle it.
         // m17n may still produce some text to commit, though.
-        thru = minput_lookup(mic_.get(), msym, NULL, produced);
+        thru = minput_lookup(mic_.get(), key, NULL, produced);
         if (mtext_len(produced) > 0) {
             auto buf = MTextToUTF8(produced);
             ic_->commitString(buf);
@@ -549,7 +556,7 @@ void M17NState::reset() {
     updateUI();
 }
 
-void M17NState::commitPreedit() const {
+void M17NState::commitPreedit() {
     if (!mic_) {
         return;
     }
