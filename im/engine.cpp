@@ -561,6 +561,8 @@ void M17NState::commitPreedit() {
         return;
     }
 
+    // Per minput_reset_ic comment, sending Mnil should commit the preedit.
+    handleKey(Mnil);
     if (!mic_->preedit) {
         return;
     }
