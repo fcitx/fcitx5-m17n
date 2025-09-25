@@ -477,6 +477,9 @@ void M17NState::keyEvent(const InputMethodEntry &entry, KeyEvent &keyEvent) {
                    reinterpret_cast<void *>(&M17NState::callback));
         mplist_put(mim_->driver.callback_list, Minput_delete_surrounding_text,
                    reinterpret_cast<void *>(&M17NState::callback));
+    }
+
+    if (!mic_ && mim_) {
         mic_.reset(minput_create_ic(mim_.get(), this));
     }
 
@@ -522,29 +525,31 @@ bool M17NState::handleKey(MSymbol key) {
 
 void M17NState::updateUI() {
     ic_->inputPanel().reset();
-    if (mic_->preedit) {
-        auto preedit = MTextToUTF8(mic_->preedit);
-        if (!preedit.empty()) {
-            SetPreedit(ic_, preedit, mic_->cursor_pos);
+    if (mic_) {
+        if (mic_->preedit) {
+            auto preedit = MTextToUTF8(mic_->preedit);
+            if (!preedit.empty()) {
+                SetPreedit(ic_, preedit, mic_->cursor_pos);
+            }
+            FCITX_M17N_DEBUG() << "IM preedit changed to " << preedit;
         }
-        FCITX_M17N_DEBUG() << "IM preedit changed to " << preedit;
+
+        if (mic_->status) {
+            auto mstatus = MTextToUTF8(mic_->status);
+            // toShow = toShow || (strlen(mstatus) != 0);
+            if (!mstatus.empty()) {
+                FCITX_M17N_DEBUG() << "IM status changed to " << mstatus;
+            }
+        }
+        if (mic_->candidate_list && mic_->candidate_show) {
+            auto candList = std::make_unique<M17NCandidateList>(engine_, ic_);
+            if (candList->size()) {
+                candList->setGlobalCursorIndex(mic_->candidate_index);
+                ic_->inputPanel().setCandidateList(std::move(candList));
+            }
+        }
     }
     ic_->updatePreedit();
-
-    if (mic_->status) {
-        auto mstatus = MTextToUTF8(mic_->status);
-        // toShow = toShow || (strlen(mstatus) != 0);
-        if (!mstatus.empty()) {
-            FCITX_M17N_DEBUG() << "IM status changed to " << mstatus;
-        }
-    }
-    if (mic_->candidate_list && mic_->candidate_show) {
-        auto candList = std::make_unique<M17NCandidateList>(engine_, ic_);
-        if (candList->size()) {
-            candList->setGlobalCursorIndex(mic_->candidate_index);
-            ic_->inputPanel().setCandidateList(std::move(candList));
-        }
-    }
     ic_->updateUserInterface(UserInterfaceComponent::InputPanel);
 }
 
@@ -552,7 +557,7 @@ void M17NState::reset() {
     if (!mic_) {
         return;
     }
-    minput_reset_ic(mic_.get());
+    mic_.reset();
     updateUI();
 }
 

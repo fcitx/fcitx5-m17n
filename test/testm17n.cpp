@@ -16,12 +16,13 @@
 #include <fcitx/inputcontextmanager.h>
 #include <fcitx/inputmethodgroup.h>
 #include <fcitx/inputmethodmanager.h>
+#include <fcitx/inputpanel.h>
 #include <fcitx/instance.h>
 #include <string>
 
 using namespace fcitx;
 
-void scheduleEvent(Instance *instance) {
+void testWijesekara(Instance *instance) {
     instance->eventDispatcher().schedule([instance]() {
         auto *m17n = instance->addonManager().addon("m17n", true);
         FCITX_ASSERT(m17n);
@@ -68,10 +69,53 @@ void scheduleEvent(Instance *instance) {
             uuid, Key(FcitxKey_braceright), false);
         testfrontend->call<ITestFrontend::keyEvent>(uuid, Key("Control+space"),
                                                     false);
+        delete ic;
     });
 }
 
-void runInstance() {}
+void testSwitchWithUnicode(Instance *instance) {
+    instance->eventDispatcher().schedule(
+        [instance]() {
+            auto *m17n = instance->addonManager().addon("m17n", true);
+            FCITX_ASSERT(m17n);
+            auto defaultGroup = instance->inputMethodManager().currentGroup();
+            std::string wijesekaraName;
+            if (!instance->inputMethodManager().entry("m17n_zh_pinyin") ||
+                !instance->inputMethodManager().entry("m17n_zh_bopomofo")) {
+                FCITX_ERROR()
+                    << "wijesekara engine is not available, skip the test";
+                return;
+            }
+            defaultGroup.inputMethodList().clear();
+            defaultGroup.inputMethodList().push_back(
+                InputMethodGroupItem("keyboard-us"));
+            defaultGroup.inputMethodList().push_back(
+                InputMethodGroupItem("m17n_zh_pinyin"));
+            defaultGroup.inputMethodList().push_back(
+                InputMethodGroupItem("m17n_zh_bopomofo"));
+            defaultGroup.setDefaultInputMethod("m17n_zh_pinyin");
+            instance->inputMethodManager().setGroup(defaultGroup);
+            auto *testfrontend = instance->addonManager().addon("testfrontend");
+            auto uuid = testfrontend->call<ITestFrontend::createInputContext>(
+                "testapp");
+            auto ic = instance->inputContextManager().findByUUID(uuid);
+            ic->focusIn();
+            instance->activate();
+            FCITX_ASSERT(instance->inputMethod(ic) == "m17n_zh_pinyin");
+            testfrontend->call<ITestFrontend::keyEvent>(uuid, Key("Control+u"),
+                                                        false);
+            const auto commitPreedit = ic->inputPanel().preedit().toString();
+            if (!commitPreedit.empty()) {
+                testfrontend->call<ITestFrontend::pushCommitExpectation>(
+                    commitPreedit);
+            }
+            instance->setCurrentInputMethod(ic, "m17n_zh_bopomofo", false);
+            FCITX_ASSERT(instance->inputMethod(ic) == "m17n_zh_bopomofo");
+            testfrontend->call<ITestFrontend::pushCommitExpectation>("ａ");
+            testfrontend->call<ITestFrontend::keyEvent>(uuid, Key("a"), false);
+            delete ic;
+        });
+}
 
 int main() {
     setupTestingEnvironment(TESTING_BINARY_DIR, {"bin"},
@@ -84,7 +128,8 @@ int main() {
     fcitx::Log::setLogRule("default=5,m17n=5");
     Instance instance(FCITX_ARRAY_SIZE(argv), argv);
     instance.addonManager().registerDefaultLoader(nullptr);
-    scheduleEvent(&instance);
+    testWijesekara(&instance);
+    testSwitchWithUnicode(&instance);
     instance.eventDispatcher().schedule([&instance]() { instance.exit(); });
     instance.exec();
 
