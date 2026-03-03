@@ -5,7 +5,7 @@ This is the source tree of fcitx-m17n, some trivial little codes the wrap the
 m17n input method engine into a fcitx input method.
 
 
-[![Jenkins Build Status](https://img.shields.io/jenkins/s/https/jenkins.fcitx-im.org/job/fcitx5-m17n.svg)](https://jenkins.fcitx-im.org/job/fcitx5-m17n/)
+[![Jenkins Build](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.fcitx-im.org%2Fjob%2Ffcitx5-m17n%2F)](https://jenkins.fcitx-im.org/job/fcitx5-m17n/)
 
 [![Coverity Scan Status](https://img.shields.io/coverity/scan/14675.svg)](https://scan.coverity.com/projects/fcitx-fcitx5-m17n)
 
