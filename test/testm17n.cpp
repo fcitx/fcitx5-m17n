@@ -6,6 +6,7 @@
  */
 #include "testdir.h"
 #include "testfrontend_public.h"
+#include <clocale>
 #include <fcitx-utils/eventdispatcher.h>
 #include <fcitx-utils/key.h>
 #include <fcitx-utils/keysym.h>
@@ -14,6 +15,7 @@
 #include <fcitx-utils/testing.h>
 #include <fcitx/addonmanager.h>
 #include <fcitx/inputcontextmanager.h>
+#include <fcitx/inputmethodentry.h>
 #include <fcitx/inputmethodgroup.h>
 #include <fcitx/inputmethodmanager.h>
 #include <fcitx/inputpanel.h>
@@ -117,7 +119,34 @@ void testSwitchWithUnicode(Instance *instance) {
         });
 }
 
+void testDefaultNameOverride(Instance *instance) {
+    instance->eventDispatcher().schedule([instance]() {
+        auto *m17n = instance->addonManager().addon("m17n", true);
+        FCITX_ASSERT(m17n);
+
+        bool sawPinyin = false;
+        bool sawBopomofo = false;
+        instance->inputMethodManager().foreachEntries(
+            [&](const InputMethodEntry &entry) {
+                if (entry.uniqueName() == "m17n_zh_pinyin") {
+                    std::cerr << "pinyin name: " << entry.name() << "\n";
+                    FCITX_ASSERT(entry.name() == "Pinyin Symbol (M17N)");
+                    sawPinyin = true;
+                }
+                if (entry.uniqueName() == "m17n_zh_bopomofo") {
+                    std::cerr << "bopomofo name: " << entry.name() << "\n";
+                    FCITX_ASSERT(entry.name() == "Chewing Symbol (M17N)");
+                    sawBopomofo = true;
+                }
+                return true;
+            });
+        FCITX_ASSERT(sawPinyin);
+        FCITX_ASSERT(sawBopomofo);
+    });
+}
+
 int main() {
+    std::setlocale(LC_ALL, "C");
     setupTestingEnvironment(TESTING_BINARY_DIR, {"bin"},
                             {TESTING_BINARY_DIR "/test"});
     // fcitx::Log::setLogRule("default=5,table=5,libime-table=5");
@@ -128,6 +157,7 @@ int main() {
     fcitx::Log::setLogRule("default=5,m17n=5");
     Instance instance(FCITX_ARRAY_SIZE(argv), argv);
     instance.addonManager().registerDefaultLoader(nullptr);
+    testDefaultNameOverride(&instance);
     testWijesekara(&instance);
     testSwitchWithUnicode(&instance);
     instance.eventDispatcher().schedule([&instance]() { instance.exit(); });

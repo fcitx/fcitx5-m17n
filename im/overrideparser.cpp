@@ -24,11 +24,11 @@ std::vector<OverrideItem> ParseDefaultSettings(int fd) {
     std::istream in(&buf);
     std::string line;
     while (std::getline(in, line)) {
+        const auto trimmed = stringutils::trimView(line);
         /* ignore comments */
-        if (!line.empty() || line[0] == '#') {
+        if (trimmed.empty() || trimmed[0] == '#') {
             continue;
         }
-        const auto trimmed = stringutils::trimView(line);
         auto strList = stringutils::split(trimmed, ":");
 
         do {
