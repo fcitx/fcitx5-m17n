@@ -6,6 +6,7 @@
  */
 #include "testdir.h"
 #include "testfrontend_public.h"
+#include <clocale>
 #include <fcitx-utils/eventdispatcher.h>
 #include <fcitx-utils/key.h>
 #include <fcitx-utils/keysym.h>
@@ -145,6 +146,7 @@ void testDefaultNameOverride(Instance *instance) {
 }
 
 int main() {
+    std::setlocale(LC_ALL, "C");
     setupTestingEnvironment(TESTING_BINARY_DIR, {"bin"},
                             {TESTING_BINARY_DIR "/test"});
     // fcitx::Log::setLogRule("default=5,table=5,libime-table=5");
