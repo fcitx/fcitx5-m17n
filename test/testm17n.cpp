@@ -113,7 +113,7 @@ void testSwitchWithUnicode(Instance *instance) {
             }
             instance->setCurrentInputMethod(ic, "m17n_zh_bopomofo", false);
             FCITX_ASSERT(instance->inputMethod(ic) == "m17n_zh_bopomofo");
-            testfrontend->call<ITestFrontend::pushCommitExpectation>("ａ");
+            testfrontend->call<ITestFrontend::pushCommitExpectation>("ㄇ");
             testfrontend->call<ITestFrontend::keyEvent>(uuid, Key("a"), false);
             delete ic;
         });
